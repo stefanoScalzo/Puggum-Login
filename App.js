@@ -58,7 +58,7 @@ export default function App() {
     <LinearGradient colors={['darkviolet', '#1D001D']} start={{ x: 0.3, y: 0.3}} style={styles.container}>
       <Image source={require('./assets/logo_horizontal_white.png')} />
       <NavBar></NavBar>
-      {user ? (
+      {/* {user ? (
         <Profile user={user} />
       ) : (
         <Button
@@ -66,7 +66,7 @@ export default function App() {
           title="Open FB Auth"
           onPress={handlePressAsync}
         />
-      )}
+      )} */}
     </LinearGradient>
   );
 }

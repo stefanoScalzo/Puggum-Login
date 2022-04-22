@@ -25,6 +25,9 @@ class NavBar extends Component {
     render() {
         return (
             <View style={styles.mainContainer}>
+                <View style={styles.imageContainer}>
+                {this.state.activeButton === 'second' && <Image style={styles.profileImage} source={require('../../assets/default.jpg')} />}
+                </View>
                 <View style={styles.container}>
                     <Pressable
                         onPress={() => this.setState({ activeButton: 'first' })}
@@ -53,9 +56,12 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: '5%',
     },
+    imageContainer:{
+        alignItems: "center",
+        justifyContent: 'center',
+    },
     container: {
         width: '100%',
-        padding: '5%',
         flexDirection: 'row',
         justifyContent: 'center',
     },
@@ -87,6 +93,14 @@ const styles = StyleSheet.create({
         paddingBottom: '3%',
         marginBottom: 10,
         margin: '2%',
+    },
+
+    profileImage:{
+        alignItems:'center', 
+        justifyContent: "center",
+        width: 100,
+        height: 100,
+        borderRadius: 100,
     }
 
 
