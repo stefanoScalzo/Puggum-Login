@@ -1,40 +1,44 @@
-import { Component } from "react";
 import React from "react";
 import { TouchableOpacity, StyleSheet, Text, View, TextInput, Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { environment } from "../../environment/environment";
-// import authenticationStyles from "../styles.js";
-
+import styles from "../styles.js";
+import { isEmpty } from 'lodash';
 
 /**
  * @description This class is used to display the log in form
  */
 function LogIn() {
-
-    // constructor() {
-    //     super();
-    //     this.state = {
-    //         error: "",
-    //     }
-    //     control=useForm();
-    // }
-    
-    const [email, setEmail] = React.useState(null);
     const [error, setError] = React.useState(null);
 
-    const { control, handleSubmit, formState: { errors } } = useForm({
+    const { control, handleSubmit, reset, formState: { errors } } = useForm({
         defaultValues: {
             email: '',
             password: ''
         }
     });
 
+    console.log("errors " + isEmpty(errors));
 
-    const onSignInTap = (data) => {
+    async function onSignInTap(data) {
         setError('Sign In');
         console.log(data);
-        setEmail(data.email);
+        console.log(JSON.stringify(data));
+        try {
+            const response = await fetch(environment['authHost'] + 'api/user/post/login', {
+                method: 'POST',
+                headers: {
+                },
+                body: JSON.stringify(data)
+            });
 
+            //navigate(['friends-explore']);
+            console.log('reset email sent successfully');
+        }
+        catch (e) {
+            console.log('Error to reset password');
+            setError('Error to Sign In');
+        }
         // this._httpClient.post(
         //     event.token?  mainenv['authHost']+'api/user/post/loginGoogle':mainenv['authHost']+'api/user/post/login',
         //     event.token?{googleToken: event.token}:this.login.getRawValue())
@@ -57,6 +61,7 @@ function LogIn() {
         //         }
         //       }
         //     }); 
+        reset();
     }
 
     /**
@@ -102,15 +107,17 @@ function LogIn() {
         console.log("reset ");
         console.log(environment['authHost']);
         console.log(JSON.stringify(email));
-        try{
-        const response = await fetch(environment['authHost']+'api/user/post/forgotpassword', {
-            method : 'POST',
-            headers : {
-            },
-            body: JSON.stringify(email)});
-        
-            console.log('reset email sent successfully');}
-        catch(e){
+        try {
+            const response = await fetch(environment['authHost'] + 'api/user/post/forgotpassword', {
+                method: 'POST',
+                headers: {
+                },
+                body: JSON.stringify(email)
+            });
+
+            console.log('reset email sent successfully');
+        }
+        catch (e) {
             console.log('Error to reset password');
             setError('Error to send email');
         }
@@ -123,62 +130,68 @@ function LogIn() {
 
     return (
         <View style={styles.container}>
-            <Controller
+            <View style={[styles.formInput, { borderColor: isEmpty(errors.email) ? 'white' : 'red' }]}>
+                <Controller
+                    control={control}
+                    name="email"
+                    rules={{
+                        required: true,
+                        message: 'Email is required'
+                    }}
+                    render={({ field: { onChange, onBlur, value }, fieldState: { errors } }) => (
+                        <TextInput
+                            placeholder="Email*"
+                            placeholderTextColor='white'
+                            className="form-input"
+                            onChangeText={onChange}
+                            value={value}
 
-                control={control}
-                rules={{
-                    required: true,
-                    message: 'Email is required'
-                }}
-                render={({ field: { onChange, onBlur, value }, fieldState: { errors } }) => (
-                    <TextInput
-                        style={[styles.formInput, { borderColor: errors ? 'red' : 'white' }]}
-                        placeholder="Email"
-                        placeholderTextColor='white'
-                        className="form-input"
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                    />
-                )}
-                name="email"
-            />
-            {errors.email && <Text>This is required.</Text>}
-
-            <Controller
-                control={control}
-                rules={{
-                    required: true,
-                    message: 'Password is required'
-                }}
-                render={({ field: { onChange, onBlur, value }, fieldState: { errors } }) => (
-                    <TextInput
-                        style={[styles.formInput, { borderColor: errors ? 'red' : 'white' }]}
-                        placeholder="Password"
-                        placeholderTextColor='white'
-                        className="form-input"
-                        secureTextEntry={true}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                    />
-                )}
-                name="password"
-            />
-            {errors.password && <Text>This is required.</Text>}
+                        />
+                    )}
+                />
+            </View>
+            {/* {errors.email && <Text>This is required.</Text>} */}
+            <View style={[styles.formInput, { borderColor: isEmpty(errors.password) ? 'white' : 'red' }]}>
+                <Controller
+                    control={control}
+                    name="password"
+                    rules={{
+                        required: true,
+                        message: 'Password is required'
+                    }}
+                    render={({ field: { onChange, onBlur, value }, fieldState: { errors } }) => (
+                        <TextInput
+                            placeholder="Password*"
+                            placeholderTextColor='white'
+                            className="form-input"
+                            secureTextEntry={true}
+                            onChangeText={onChange}
+                            value={value}
+                        />
+                    )}
+                />
+            </View>
+            {/* {errors.password && <Text>This is required.</Text>} */}
 
             <Text style={styles.error} class="error" textWrap="true" >{error}</Text>
-
-            <TouchableOpacity style={styles.buttonSignIn}
-                onPress={handleSubmit(onSignInTap)}
-            >
-                <Text style={styles.textSignIn}>Sign In</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonForgotPass}
-                onPress={onForgotTap}
-            >
-                <Text style={styles.textForgotPass}>Forgot Password</Text>
-            </TouchableOpacity>
+            <View style={{ opacity: isEmpty(errors.email) ? '1' : '0.5' }}>
+                <TouchableOpacity
+                    style={styles.buttonSignIn}
+                    disabled={isEmpty(errors) ? false : true}
+                    onPress={handleSubmit(onSignInTap)}
+                >
+                    <Text style={styles.textSignIn}>Sign In</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{ opacity: isEmpty(errors.email) ? '1' : '0.5' }}>
+                <TouchableOpacity
+                    style={styles.buttonForgotPass}
+                    disabled={isEmpty(errors.email) ? false : true}
+                    onPress={onForgotTap}
+                >
+                    <Text style={styles.textForgotPass}>Forgot Password</Text>
+                </TouchableOpacity>
+            </View>
 
             {/* <TouchableOpacity style={styles.buttonSignInwithAG}>
                     <Text style={styles.textAG}>Sign In with Apple</Text>
@@ -193,87 +206,3 @@ function LogIn() {
 
 export default LogIn;
 
-const styles = StyleSheet.create({
-    // container: {
-    //     width:'100%',
-    //     padding:'5%',
-    //   },
-
-    textForgotPass: {
-        fontSize: 19,
-        fontWeight: 'bold',
-        letterSpacing: 0.25,
-        color: 'darkviolet',
-    },
-    buttonForgotPass: {
-        alignItems: "center",
-        justifyContent: "center",
-        borderColor: 'darkviolet',
-        borderWidth: 1,
-        backgroundColor: 'white',
-        borderRadius: 100,
-        marginBottom: 10,
-        minHeight: 44,
-        height: 44,
-    },
-
-    textSignIn: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 19,
-    },
-
-    buttonSignIn: {
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: 'darkviolet',
-        borderRadius: 100,
-        padding: 5,
-        marginBottom: 10,
-        minHeight: 44,
-        height: 44,
-
-    },
-    textAG: {
-        color: 'black',
-        fontWeight: 'bold',
-        fontSize: 19,
-    },
-    buttonSignInwithAG: {
-        alignItems: "center",
-        justifyContent: "center",
-        borderColor: 'black',
-        borderWidth: 1,
-        backgroundColor: 'white',
-        borderRadius: 100,
-        marginBottom: 10,
-        minHeight: 44,
-        height: 44,
-    },
-
-    error: {
-        color: 'red',
-        fontSize: 16,
-        marginBottom: '3%',
-        marginTop: '3%',
-    },
-
-    formInput: {
-        fontSize: 16,
-        marginBottom: 5,
-        borderBottomWidth: 1,
-        borderColor: 'white',
-        paddingBottom: 5,
-        marginTop: '5%',
-    },
-
-    errorInput: {
-        fontSize: 16,
-        marginBottom: 5,
-        borderBottomWidth: 1,
-        borderColor: 'red',
-        paddingBottom: 5,
-        marginTop: '5%',
-    }
-
-});
