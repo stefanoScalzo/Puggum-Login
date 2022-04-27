@@ -5,16 +5,19 @@ import DatePicker from 'react-native-datepicker';
 import { useForm, Controller } from "react-hook-form";
 import { environment } from "../../environment/environment";
 import styles from "../styles.js";
+import { Formik } from 'formik';
+import * as yup from 'yup';
 
 /**
  * @description This class is used to display the log in form
  */
 function SignUp() {
-    // constructor(props) {
-    //     super(props)
-    //     this.state = { date: "" }
-    // }
-    const [date, setDate] = React.useState(null);
+    const loginValidationSchema = yup.object().shape({
+        name: yup.string().required('Name is required'),
+        email: yup.string().email('Please enter valid email').required('Email is required'),
+        password: yup.string().required('Password is required'),
+    });
+    
     const [error, setError] = React.useState(null);
 
     const { control, handleSubmit, formState: { errors } } = useForm({
@@ -74,116 +77,102 @@ function SignUp() {
        * @returns The div containing 
        */
     return (
-        <View style={styles.container}>
+        <Formik
+            initialValues={{ date:'',name:'',email: '', password: '' }}
+            validateOnMount={true}
+            onSubmit={values => onRegisterTap(values)}
+            validationSchema={loginValidationSchema}>
+            {({ handleChange, handleBlur, handleSubmit, values, touched, errors, isValid }) => (
+                <View style={styles.container}>
 
-            <DatePicker style={styles.datePicker}
-                date={date}
-                mode="date"
-                placeholder="Date of Birth"
-                format="YYYY-MM-DD"
-                minDate="1920-05-01"
-                maxDate="2020-08-01"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                    dateIcon: {
-                        display: 'none'
-                    },
-                    dateInput: {
-                        borderWidth: 0,
-                        alignItems: 'flex-start',
-                        justifyContent: 'flex-end'
-                    },
-                    dateText: {
-                        color: 'white',
-                        fontSize: 16,
-                    },
-                    placeholderText: {
-                        color: 'white',
-                        fontSize: 16
-                    },
-                }}
-                onDateChange={(date) => { setDate(date) }}
-            />
-            <Controller
-
-                control={control}
-                rules={{
-                    required: true,
-                    message: 'Name is required'
-                }}
-                render={({ field: { onChange, onBlur, value }, fieldState: { errors } }) => (
+                    <DatePicker style={styles.datePicker}
+                        date={values.date}
+                        mode="date"
+                        placeholder="Date of Birth"
+                        format="YYYY-MM-DD"
+                        minDate="1920-05-01"
+                        maxDate="2020-08-01"
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        customStyles={{
+                            dateIcon: {
+                                display: 'none'
+                            },
+                            dateInput: {
+                                borderWidth: 0,
+                                alignItems: 'flex-start',
+                                justifyContent: 'flex-end'
+                            },
+                            dateText: {
+                                color: 'white',
+                                fontSize: 16,
+                            },
+                            placeholderText: {
+                                color: 'white',
+                                fontSize: 16
+                            },
+                        }}
+                        onDateChange={handleChange('date') }
+                        onBlur={handleBlur('date')}
+                        value={values.date}
+                    />
+                    <Text>date: {values.date}</Text>
 
                     <TextInput
-                        style={[styles.formInput, { borderColor: errors ? 'red' : 'white' }]}
+                        style={[styles.formInput, { borderColor: (errors.name && touched.name) ? 'red' : 'white' }]}
                         placeholder="Display Name*"
                         placeholderTextColor='white'
                         className="form-input form-input-placeholder"
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value} />
-                )}
-                name="name"
-            />
-            {errors.name && <Text>This is required.</Text>}
+                        onChangeText={handleChange('name')}
+                        onBlur={handleBlur('name')}
+                        value={values.name} />
+                    {(errors.name && touched.name) && <Text>{errors.name} value {errors.name && touched.name ? 'true' : 'false'}</Text>}
 
-            <Controller
 
-                control={control}
-                rules={{
-                    required: true,
-                    message: 'Email is required'
-                }}
-                render={({ field: { onChange, onBlur, value }, fieldState: { errors } }) => (
                     <TextInput
-                        style={[styles.formInput, { borderColor: errors ? 'red' : 'white' }]}
+                        style={[styles.formInput, { borderColor: (errors.email && values.email) ? 'red' : 'white' }]}
                         placeholder="Email*"
                         placeholderTextColor='white'
                         className="form-input"
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
+                        onChangeText={handleChange('email')}
+                        onBlur={handleBlur('email')}
+                        value={values.email}
                     />
-                )}
-                name="email"
-            />
-            {errors.email && <Text>This is required.</Text>}
-            <Controller
-                control={control}
-                rules={{
-                    required: true,
-                    message: 'Password is required'
-                }}
-                render={({ field: { onChange, onBlur, value }, fieldState: { errors } }) => (
+                    {(errors.email && touched.email) && <Text>{errors.email} value {errors.email && values.email ? 'true' : 'false'}</Text>}
+                    <Text>{values.email} value</Text>
+
                     <TextInput
-                        style={[styles.formInput, { borderColor: errors ? 'red' : 'white' }]}
+                        style={[styles.formInput, { borderColor: (errors.password && touched.password) ? 'red' : 'white' }]}
                         placeholder="Password*"
                         placeholderTextColor='white'
                         className="form-input"
                         secureTextEntry={true}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
+                        onChangeText={handleChange('password')}
+                        onBlur={handleBlur('password')}
+                        value={values.password}
                     />
-                )}
-                name="password"
-            />
-            {errors.password && <Text>This is required.</Text>}
+                    {(errors.password && touched.password) && <Text>{errors.password} value {errors.password && touched.password ? 'true' : 'false'}</Text>}
 
-            <Text style={styles.error} class="error" textWrap="true" >{error}</Text>
+                    <Text style={styles.error} class="error" textWrap="true" >{error}</Text>
+                    
+                    <View style={{ opacity: (!isValid) ? '0.5' : '1' }}>
+                    <TouchableOpacity 
+                        style={styles.buttonSignUp}
+                        disabled={!isValid}
+                        onPress={handleSubmit}>
+                        <Text style={styles.textSignUp}>Register</Text>
+                    </TouchableOpacity>
+                    </View>
 
-            <TouchableOpacity style={styles.buttonSignUp}
-                onPress={handleSubmit(onRegisterTap)}>
-                <Text style={styles.textSignUp}>Register</Text>
-            </TouchableOpacity>
-
-            {/* <TouchableOpacity style={styles.buttonSignUpnwithAG}>
+                    {/* <TouchableOpacity style={styles.buttonSignUpnwithAG}>
                     <Text style={styles.textAG}>Sign up with Apple</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonSignUpnwithAG}>
                     <Text style={styles.textAG}>Sign up with Google</Text>
                 </TouchableOpacity> */}
-        </View>
+                </View>
+            )}
+        </Formik>
     )
 }
 export default SignUp;
