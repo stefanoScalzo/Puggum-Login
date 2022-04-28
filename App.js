@@ -5,6 +5,7 @@ import * as React from "react";
 import { Button, Image, StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient'
 import NavBar from "./src/components/NavBar.js"
+import KeyboardAvoidingInput from "./src/components/KeyboardAvoidingInput.js";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -54,8 +55,9 @@ export default function App() {
   };
 
   return (
-
     <LinearGradient colors={['darkviolet', '#1D001D']} start={{ x: 0.3, y: 0.3}} style={styles.container}>
+       <KeyboardAvoidingInput >
+         <View style={styles.container}>
       <Image source={require('./assets/logo_horizontal_white.png')} />
       <NavBar></NavBar>
       {/* {user ? (
@@ -67,7 +69,10 @@ export default function App() {
           onPress={handlePressAsync}
         />
       )} */}
+      </View>
+      </KeyboardAvoidingInput>
     </LinearGradient>
+   
   );
 }
 
@@ -86,6 +91,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  container2: {
+    flex: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor:'blue',
+    width:'100%',
+    height:'100%',
   },
   profile: {
     alignItems: "center",

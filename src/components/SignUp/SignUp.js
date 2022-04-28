@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, TouchableOpacity, Image, StyleSheet, Text, View, TextInput } from "react-native";
+import { ScrollView, Alert, TouchableOpacity, Image, StyleSheet, Text, View, TextInput } from "react-native";
 /*https://github.com/xgfe/react-native-datepicker*/
 import DatePicker from 'react-native-datepicker';
 import { useForm, Controller } from "react-hook-form";
@@ -7,7 +7,6 @@ import { environment } from "../../environment/environment";
 import styles from "../styles.js";
 import { Formik } from 'formik';
 import * as yup from 'yup';
-
 /**
  * @description This class is used to display the log in form
  */
@@ -17,16 +16,8 @@ function SignUp() {
         email: yup.string().email('Please enter valid email').required('Email is required'),
         password: yup.string().required('Password is required'),
     });
-    
-    const [error, setError] = React.useState(null);
 
-    const { control, handleSubmit, formState: { errors } } = useForm({
-        defaultValues: {
-            name: '',
-            email: '',
-            password: ''
-        }
-    });
+    const [error, setError] = React.useState(null);
 
     const onRegisterTap = (data) => {
         Alert.alert(
@@ -50,9 +41,30 @@ function SignUp() {
         );
     }
 
-    const agreeOption = (data) => {
+    //Test posting 
+    async function agreeOption(data) {
         console.log("Agree Pressed");
         console.log(data);
+        try {
+                const response = await fetch('https:///b3c9c179-0a92-403e-94aa-61660d689287', {
+                    method: 'POST',
+                    headers: {
+                        'Accept':'application/json',
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+    
+                console.log('reset email sent successfully');
+            }
+            catch (e) {
+                console.log('Error to reset password');
+                setError('There was an error');
+            }
+        // onSubmit={async (values) => {
+        //     await new Promise((r) => setTimeout(r, 500));
+        //     alert(JSON.stringify(values, null, 2));
+        //   }}
         // this._httpClient.post(
         //     mainenv['authHost']+'api/user/post/registerGoogle',
         //     this.registration.getRawValue())

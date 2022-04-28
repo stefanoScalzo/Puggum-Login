@@ -45,7 +45,6 @@ class NavBar extends Component {
                 </View>
                 {this.state.activeButton === 'first' && <LogIn></LogIn>}
                 {this.state.activeButton === 'second' && <SignUp></SignUp>}
-                {/* <SignUp></SignUp> */}
             </View>
         )
     }
