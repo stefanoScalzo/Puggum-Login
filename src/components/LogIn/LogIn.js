@@ -29,22 +29,32 @@ function LogIn() {
     async function onSignInTap(data) {
         setError('Sign In');
         console.log(data);
+        console.log(environment['authHost']);
         console.log(JSON.stringify(data));
-        // try {
-        //     const response = await fetch(environment['authHost'] + 'api/user/post/login', {
-        //         method: 'POST',
-        //         headers: {
-        //         },
-        //         body: JSON.stringify(data)
-        //     });
-
-        //     //navigate(['friends-explore']);
-        //     console.log('reset email sent successfully');
-        // }
-        // catch (e) {
-        //     console.log('Error to reset password');
-        //     setError('Error to Sign In');
-        //}
+        const url=environment['authHost'] + 'api/user/post/login';
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if(response['status']=='valid'){
+                console.log('valid');
+            }
+            else{
+                console.log(response['error']);
+            }
+            console.log("response "+response);
+            console.log('Log In successfully');
+        }
+        catch (e) {
+            console.log('Error to Sign In password ' +e);
+            setError('Error to Sign In ' + e);
+        }
+      
         // this._httpClient.post(
         //     event.token?  mainenv['authHost']+'api/user/post/loginGoogle':mainenv['authHost']+'api/user/post/login',
         //     event.token?{googleToken: event.token}:this.login.getRawValue())
@@ -72,7 +82,7 @@ function LogIn() {
     /**
      * This function is used to alert the user to ask if they want to reset their password or not
      */
-    const onForgotTap = (data) => {
+    const onForgotTap = (email) => {
         setError('Forgot Pass');
         Alert.alert(
             "Reset Password?",
@@ -83,7 +93,7 @@ function LogIn() {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { text: "Reset", onPress: () => resetOption(data) }
+                { text: "Reset", onPress: () => resetOption(email) }
             ]
         );
     }
@@ -107,26 +117,36 @@ function LogIn() {
     // }
 
     //helper method to reset password
-    async function resetOption(data) {
+    async function resetOption(email) {
         console.log("OK Pressed");
         console.log("reset ");
         console.log(environment['authHost']);
-        console.log("email " + JSON.stringify(data));
-        console.log(data);
-        // try {
-        //     const response = await fetch(environment['authHost'] + 'api/user/post/forgotpassword', {
-        //         method: 'POST',
-        //         headers: {
-        //         },
-        //         body: JSON.stringify(email)
-        //     });
+        console.log("email " + JSON.stringify(email));
+        console.log(email);
+        const url=mainenv['authHost']+'api/user/post/forgotpassword';
 
-        //     console.log('reset email sent successfully');
-        // }
-        // catch (e) {
-        //     console.log('Error to reset password');
-        //     setError('Error to send email');
-        // }
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(email)
+            });
+            if(response['status']=='valid'){
+                console.log('valid');
+            }
+            else{
+                console.log(response['error']);
+            }
+            console.log("response "+response);
+
+            console.log('Reset email sent successfully');
+        }
+        catch (e) {
+            console.log('Error to reset password '+e );
+            setError('Error to send email '+e);
+        }
     }
 
     /**
@@ -144,7 +164,7 @@ function LogIn() {
                 <View style={styles.container}>
 
                     <TextInput
-                        style={[styles.formInput, { borderColor: (errors.email && values.email) ? 'red' : 'white' }]}
+                        style={[styles.formInput, { borderColor: ((errors.email && touched.email)||(errors.email && values.email)) ? 'red' : 'white' }]}
                         placeholder="Email*"
                         placeholderTextColor='white'
                         className="form-input"

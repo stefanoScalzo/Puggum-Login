@@ -7,12 +7,13 @@ import { environment } from "../../environment/environment";
 import styles from "../styles.js";
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { terms } from "../../edit-profile/terms";
 /**
  * @description This class is used to display the log in form
  */
 function SignUp() {
     const loginValidationSchema = yup.object().shape({
-        name: yup.string().required('Name is required'),
+        displayName: yup.string().required('Name is required'),
         email: yup.string().email('Please enter valid email').required('Email is required'),
         password: yup.string().required('Password is required'),
     });
@@ -21,8 +22,8 @@ function SignUp() {
 
     const onRegisterTap = (data) => {
         Alert.alert(
-            "Reset Password?",
-            "An email with a temporary password will be sent to your email address.",
+            "Term Of Use",
+            terms,
             [
                 {
                     text: "No",
@@ -45,21 +46,47 @@ function SignUp() {
     async function agreeOption(data) {
         console.log("Agree Pressed");
         console.log(data);
+        console.log(data.email);
+        console.log(data.displayName);
+        console.log(data.dob);
+        var datePieces = data.dob.split('-');
+        var year = datePieces[0];
+        var month = datePieces[1];
+        var day = datePieces[2];
+        console.log(year);
+        console.log(month);
+        console.log(day);
+        console.log(environment['authHost']);
+        //create a new User
+        const newUser={
+            displayName:data.displayName,
+            email:data.email,
+            year:datePieces[0],
+            month:datePieces[1],
+            day: datePieces[2],
+            password:data.password,
+            dob:data.dob,
+        }
+        console.log('new User '+newUser.year);
+        var url=environment['authHost'] + 'api/user/post/registerGoogle';
+        // var url='https://webhook.site/b3c9c179-0a92-403e-94aa-61660d689287';
         try {
-                const response = await fetch('https:///b3c9c179-0a92-403e-94aa-61660d689287', {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
-                        'Accept':'application/json',
+                        // 'Accept':'application/json',
                         'Content-Type':'application/json'
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(newUser)
                 });
-    
-                console.log('reset email sent successfully');
+                if(response=='valid'){
+                    console.log('valid');
+                }
+                console.log('Registered successfully');
             }
             catch (e) {
-                console.log('Error to reset password');
-                setError('There was an error');
+                console.log('Error to create user ' +e);
+                setError('There was an error ' +e);
             }
         // onSubmit={async (values) => {
         //     await new Promise((r) => setTimeout(r, 500));
@@ -90,7 +117,7 @@ function SignUp() {
        */
     return (
         <Formik
-            initialValues={{ date:'',name:'',email: '', password: '' }}
+            initialValues={{ dob:'',displayName:'',email: '', password: '' }}
             validateOnMount={true}
             onSubmit={values => onRegisterTap(values)}
             validationSchema={loginValidationSchema}>
@@ -98,12 +125,12 @@ function SignUp() {
                 <View style={styles.container}>
 
                     <DatePicker style={styles.datePicker}
-                        date={values.date}
+                        date={values.dob}
                         mode="date"
                         placeholder="Date of Birth"
                         format="YYYY-MM-DD"
-                        minDate="1920-05-01"
-                        maxDate="2020-08-01"
+                        // minDate="1920-05-01"
+                        // maxDate="2020-08-01"
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
                         customStyles={{
@@ -124,25 +151,25 @@ function SignUp() {
                                 fontSize: 16
                             },
                         }}
-                        onDateChange={handleChange('date') }
-                        onBlur={handleBlur('date')}
-                        value={values.date}
+                        onDateChange={handleChange('dob') }
+                        onBlur={handleBlur('dob')}
+                        value={values.dob}
                     />
-                    <Text>date: {values.date}</Text>
+                    <Text>date: {values.dob}</Text>
 
                     <TextInput
-                        style={[styles.formInput, { borderColor: (errors.name && touched.name) ? 'red' : 'white' }]}
+                        style={[styles.formInput, { borderColor: (errors.displayName && touched.displayName) ? 'red' : 'white' }]}
                         placeholder="Display Name*"
                         placeholderTextColor='white'
                         className="form-input form-input-placeholder"
-                        onChangeText={handleChange('name')}
-                        onBlur={handleBlur('name')}
-                        value={values.name} />
-                    {(errors.name && touched.name) && <Text>{errors.name} value {errors.name && touched.name ? 'true' : 'false'}</Text>}
+                        onChangeText={handleChange('displayName')}
+                        onBlur={handleBlur('displayName')}
+                        value={values.displayName} />
+                    {(errors.displayName && touched.displayName) && <Text>{errors.displayName} value {errors.name && touched.displayName ? 'true' : 'false'}</Text>}
 
 
                     <TextInput
-                        style={[styles.formInput, { borderColor: (errors.email && values.email) ? 'red' : 'white' }]}
+                        style={[styles.formInput, { borderColor: ((errors.email && touched.email)||(errors.email && values.email)) ? 'red' : 'white' }]}
                         placeholder="Email*"
                         placeholderTextColor='white'
                         className="form-input"
