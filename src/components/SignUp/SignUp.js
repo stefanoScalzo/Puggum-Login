@@ -8,10 +8,14 @@ import styles from "../styles.js";
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { terms } from "../../edit-profile/terms";
+import * as SecureStore from 'expo-secure-store';
+import { userService } from '../../user/user.service';
+
 /**
  * @description This class is used to display the log in form
  */
 function SignUp() {
+    const token= '';
     const loginValidationSchema = yup.object().shape({
         displayName: yup.string().required('Name is required'),
         email: yup.string().email('Please enter valid email').required('Email is required'),
@@ -45,18 +49,7 @@ function SignUp() {
     //Test posting 
     async function agreeOption(data) {
         console.log("Agree Pressed");
-        console.log(data);
-        console.log(data.email);
-        console.log(data.displayName);
-        console.log(data.dob);
-        var datePieces = data.dob.split('-');
-        var year = datePieces[0];
-        var month = datePieces[1];
-        var day = datePieces[2];
-        console.log(year);
-        console.log(month);
-        console.log(day);
-        console.log(environment['authHost']);
+        let datePieces = data.dob.split('-');
         //create a new User
         const newUser={
             displayName:data.displayName,
@@ -68,7 +61,7 @@ function SignUp() {
             dob:data.dob,
         }
         console.log('new User '+newUser.year);
-        var url=environment['authHost'] + 'api/user/post/registerGoogle';
+        let url=environment['authHost'] + 'api/user/post/registerGoogle';
         // var url='https://webhook.site/b3c9c179-0a92-403e-94aa-61660d689287';
         try {
                 const response = await fetch(url, {
@@ -79,37 +72,65 @@ function SignUp() {
                     },
                     body: JSON.stringify(newUser)
                 });
-                if(response=='valid'){
-                    console.log('valid');
+                let responseJSON=await response.json();
+                if(responseJSON['status']=='valid'){
+                    console.log('6.'+responseJSON['data']['jwt']);
+                    // localStorage.setItem('jwt', responseJSON['data']['jwt']);
+                    await SecureStore.setItemAsync('jwt',responseJSON['data']['jwt']);
+                    //test only 
+                    const token=await SecureStore.getItemAsync('jwt');
+                    console.log(token);
+                    //
+                    updateTokenInDatabase();
+                    console.log('Registered successfully');
+                    console.log("logged in")
                 }
-                console.log('Registered successfully');
+                else{
+                    console.log('8.'+responseJSON['error']);
+                    setError('There was an error ' + responseJSON['error']);
+                }
+                
             }
             catch (e) {
                 console.log('Error to create user ' +e);
                 setError('There was an error ' +e);
             }
-        // onSubmit={async (values) => {
-        //     await new Promise((r) => setTimeout(r, 500));
-        //     alert(JSON.stringify(values, null, 2));
-        //   }}
-        // this._httpClient.post(
-        //     mainenv['authHost']+'api/user/post/registerGoogle',
-        //     this.registration.getRawValue())
-        //   .toPromise().then(result => {
-        //     if(result['status']=='valid') {
-        //       ApplicationSettings.setString("jwt",result['data']['jwt']);
-        //       ApplicationSettings.setNumber("timer",result['data']['timer']);
-        //       this.userService.updateTokenInDatabase();
-        //       this.userService.isAuthenticated(true);
-        //       this.router.navigate(['/tutorial']);
-        //     }
-        //     else {
-        //         console.log(result['error']);
-        //       }
-        //     });
-        //   }
-
     }
+
+    async function updateTokenInDatabase() {
+        console.log("update token "+JSON.stringify(await SecureStore.getItemAsync('jwt')));
+        const url = environment['host'] + "api/user/post/updateToken";
+
+        if (token != null) {
+            console.log("inside update");
+          try {
+            const userToken={
+                token:await SecureStore.getItemAsync('jwt')
+            }
+            console.log(userToken);
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: {
+                'x-app-auth':await SecureStore.getItemAsync('jwt'),
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(userToken)
+            });
+            let responseJSON = await response.json();
+            console.log(responseJSON['status'] == 'valid');
+            if (responseJSON['status'] == 'valid') {
+              console.log('valid');
+            }
+            else {
+              console.log(responseJSON['error']);
+            }
+            console.log('Token updated successfully');
+          }
+          catch (e) {
+            console.log('Error to update token ' + e);
+          }
+        }
+      }
 
     /**
        * @description render() returns a div 
