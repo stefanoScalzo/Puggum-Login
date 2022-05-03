@@ -3,16 +3,16 @@ import * as Facebook from "expo-auth-session/providers/facebook";
 import * as WebBrowser from "expo-web-browser";
 import * as React from "react";
 import { Button, Image, StyleSheet, Text, View } from "react-native";
-import { LinearGradient } from 'expo-linear-gradient'
-import NavBar from "./src/components/NavBar.js"
+import { LinearGradient } from "expo-linear-gradient";
+import NavBar from "./src/components/NavBar.js";
 import KeyboardAvoidingInput from "./src/components/KeyboardAvoidingInput.js";
+import styles from "./src/components/styles";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const FB_APP_ID = "145668956753819";
 
 export default function App() {
-
   const [user, setUser] = React.useState(null);
   // Request
   const [request, response, promptAsync] = Facebook.useAuthRequest({
@@ -30,7 +30,7 @@ export default function App() {
   if (request) {
     console.log(
       "You need to add this url to your authorized redirect urls on your Facebook app: " +
-      request.redirectUri
+        request.redirectUri
     );
   }
 
@@ -55,12 +55,16 @@ export default function App() {
   };
 
   return (
-    <LinearGradient colors={['darkviolet', '#1D001D']} start={{ x: 0.3, y: 0.3}} style={styles.container}>
-       <KeyboardAvoidingInput >
-         <View style={styles.container}>
-      <Image source={require('./assets/logo_horizontal_white.png')} />
-      <NavBar></NavBar>
-      {/* {user ? (
+    <LinearGradient
+      colors={["darkviolet", "#1D001D"]}
+      start={{ x: 0.3, y: 0.3 }}
+      style={styles.appContainer}
+    >
+      <KeyboardAvoidingInput>
+        <View style={styles.appContainer}>
+          <Image source={require("./assets/logo_horizontal_white.png")} />
+          <NavBar></NavBar>
+          {/* {user ? (
         <Profile user={user} />
       ) : (
         <Button
@@ -69,10 +73,9 @@ export default function App() {
           onPress={handlePressAsync}
         />
       )} */}
-      </View>
+        </View>
       </KeyboardAvoidingInput>
     </LinearGradient>
-   
   );
 }
 
@@ -85,30 +88,3 @@ function Profile({ user }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  container2: {
-    flex: 2,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor:'blue',
-    width:'100%',
-    height:'100%',
-  },
-  profile: {
-    alignItems: "center",
-  },
-  name: {
-    fontSize: 20,
-  },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-});

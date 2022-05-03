@@ -1,32 +1,33 @@
 import React from "react";
-import { StyleSheet,Platform, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Keyboard, Dimensions } from "react-native";
+import {
+  Platform,
+  KeyboardAvoidingView,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  SafeAreaView,
+} from "react-native";
+import styles from "./styles.js";
 
 /**
- * @description This class is used to display the log in form
+ * @description This function is used to wrap the children to prevent the keybord from hiding the inputs
  */
 function KeyboardAvoidingInput({ children }) {
-    return (
-        
-        <KeyboardAvoidingView enabled behavior={Platform.OS==="ios"?"padding":null} 
-        style={styles.keyboardAvoidingViewStyle}>
-            <ScrollView 
-                contentContainerStyle={{flex:1}}
-                bounces={false} >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                {children}
-            </TouchableWithoutFeedback>
-            </ScrollView>
-
-        </KeyboardAvoidingView>
-
-    );
+  return (
+    <SafeAreaView>
+      <KeyboardAvoidingView
+        enabled
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        style={styles.keyboardAvoidingViewStyle}
+      >
+        <ScrollView contentContainerStyle={{ flex: 1 }} bounces={false}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            {children}
+          </TouchableWithoutFeedback>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
 }
 
 export default KeyboardAvoidingInput;
-
-const styles = StyleSheet.create({
-    keyboardAvoidingViewStyle: {
-        flex:1,
-        width: Dimensions.get('window').width, 
-    }
-});

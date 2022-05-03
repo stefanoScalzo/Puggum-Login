@@ -1,5 +1,4 @@
-export const terms = 
-`
+export const terms = `
 Privacy Policy
 
 Privacy Policy (https://www.termsfeed.com/live/c3d61902-ff28-445c-a85d-4bd7bac47c3c)
@@ -428,4 +427,4 @@ Q.What currency is the prize?
 Canadian Currency
 Q.Are minors allowed on this site?
 Yes, but they must have parental consent
-`
+`;
