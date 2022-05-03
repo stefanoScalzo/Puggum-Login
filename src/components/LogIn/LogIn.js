@@ -28,7 +28,6 @@ function LogIn() {
    * @param {*} data is the values entered by the user
    */
   async function onSignInTap(data) {
-    console.log(data);
     const url = environment["authHost"] + "api/user/post/login";
     try {
       const response = await fetch(url, {
@@ -39,28 +38,18 @@ function LogIn() {
         body: JSON.stringify(data),
       });
       let responseJSON = await response.json();
-      console.log(responseJSON["status"] == "valid");
-
       if (responseJSON["status"] == "valid") {
-        console.log("6." + responseJSON["data"]["jwt"]);
         await SecureStore.setItemAsync("jwt", responseJSON["data"]["jwt"]);
-        //test only
-        const token = await SecureStore.getItemAsync("jwt");
-        console.log("token " + token);
-        //
         updateTokenInDatabase();
-
         console.log("logged in");
       } else {
         if (responseJSON["data"]) {
           setError(responseJSON["data"]["message"]);
         } else {
-          console.log(responseJSON["error"]);
           setError(responseJSON["error"]);
         }
       }
     } catch (e) {
-      console.log("Error to Sign In password " + e);
       setError("Error to Sign In " + e);
     }
   }
@@ -75,7 +64,6 @@ function LogIn() {
       [
         {
           text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
           style: "cancel",
         },
         { text: "Reset", onPress: () => resetOption(email) },
@@ -88,8 +76,6 @@ function LogIn() {
    * @param {*} valueEmail is the email entered by the user
    */
   async function resetOption(valueEmail) {
-    console.log("OK Pressed");
-    console.log(JSON.stringify(valueEmail));
     const url = environment["authHost"] + "api/user/post/forgotpassword";
     const userEmail = {
       email: valueEmail,
@@ -104,14 +90,9 @@ function LogIn() {
       });
       let responseJSON = await response.json();
       if (responseJSON["status"] == "valid") {
-        console.log("validddd");
-        console.log(responseJSON["data"]["message"]);
         setError(responseJSON["data"]["message"]);
-      } else {
-        console.log("errorrr " + responseJSON["error"]);
       }
     } catch (e) {
-      console.log("Error to reset password " + e);
       setError("Error to reset email " + e);
     }
   }
@@ -120,18 +101,13 @@ function LogIn() {
    * async function used to update the user's token in the database
    */
   async function updateTokenInDatabase() {
-    console.log(
-      "update token " + JSON.stringify(await SecureStore.getItemAsync("jwt"))
-    );
     const url = environment["host"] + "api/user/post/updateToken";
 
     if (token != null) {
-      console.log("inside update");
       try {
         const userToken = {
           token: await SecureStore.getItemAsync("jwt"),
         };
-        console.log(userToken);
         const response = await fetch(url, {
           method: "POST",
           headers: {
@@ -140,16 +116,8 @@ function LogIn() {
           },
           body: JSON.stringify(userToken),
         });
-        let responseJSON = await response.json();
-        console.log(responseJSON["status"] == "valid");
-        if (responseJSON["status"] == "valid") {
-          console.log("valid");
-        } else {
-          console.log(responseJSON["error"]);
-        }
-        console.log("Token updated successfully");
       } catch (e) {
-        console.log("Error to update token " + e);
+        setError("Error to update token " + e);
       }
     }
   }
@@ -193,14 +161,6 @@ function LogIn() {
             onBlur={handleBlur("email")}
             value={values.email}
           />
-          {errors.email && touched.email && (
-            <Text>
-              {errors.email} value{" "}
-              {errors.email && values.email ? "true" : "false"}
-            </Text>
-          )}
-          <Text>{values.email} value</Text>
-
           <TextInput
             style={[
               styles.formInput,
@@ -217,16 +177,13 @@ function LogIn() {
             onBlur={handleBlur("password")}
             value={values.password}
           />
-          {errors.password && touched.password && (
-            <Text>
-              {errors.password} value{" "}
-              {errors.password && touched.password ? "true" : "false"}
+
+          {error && (
+            <Text style={styles.error} class="error" textWrap="true">
+              {error}
             </Text>
           )}
 
-          <Text style={styles.error} class="error" textWrap="true">
-            {error}
-          </Text>
           <View style={{ opacity: !isValid ? "0.5" : "1" }}>
             <TouchableOpacity
               style={styles.buttonSignIn}

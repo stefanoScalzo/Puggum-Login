@@ -35,12 +35,10 @@ function SignUp() {
     Alert.alert("Term Of Use", terms, [
       {
         text: "No",
-        onPress: () => console.log("No Pressed"),
         style: "No",
       },
       {
         text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
       },
       {
         text: "I agree to the Terms",
@@ -54,7 +52,6 @@ function SignUp() {
    * @param {*} data is the values entered by the user
    */
   async function agreeOption(data) {
-    console.log("Agree Pressed");
     let datePieces = data.dob.split("-");
     //create a new User
     const newUser = {
@@ -66,7 +63,6 @@ function SignUp() {
       password: data.password,
       dob: data.dob,
     };
-    console.log("new User " + newUser.year);
     let url = environment["authHost"] + "api/user/post/registerGoogle";
     try {
       const response = await fetch(url, {
@@ -78,21 +74,13 @@ function SignUp() {
       });
       let responseJSON = await response.json();
       if (responseJSON["status"] == "valid") {
-        console.log("6." + responseJSON["data"]["jwt"]);
         await SecureStore.setItemAsync("jwt", responseJSON["data"]["jwt"]);
-        //test only
-        const token = await SecureStore.getItemAsync("jwt");
-        console.log(token);
-        //
         updateTokenInDatabase();
-        console.log("Registered successfully");
         console.log("logged in");
       } else {
-        console.log("8." + responseJSON["error"]);
         setError("There was an error " + responseJSON["error"]);
       }
     } catch (e) {
-      console.log("Error to create user " + e);
       setError("There was an error " + e);
     }
   }
@@ -101,18 +89,13 @@ function SignUp() {
    * async function used to update the user's token in the database
    */
   async function updateTokenInDatabase() {
-    console.log(
-      "update token " + JSON.stringify(await SecureStore.getItemAsync("jwt"))
-    );
     const url = environment["host"] + "api/user/post/updateToken";
 
     if (token != null) {
-      console.log("inside update");
       try {
         const userToken = {
           token: await SecureStore.getItemAsync("jwt"),
         };
-        console.log(userToken);
         const response = await fetch(url, {
           method: "POST",
           headers: {
@@ -121,16 +104,8 @@ function SignUp() {
           },
           body: JSON.stringify(userToken),
         });
-        let responseJSON = await response.json();
-        console.log(responseJSON["status"] == "valid");
-        if (responseJSON["status"] == "valid") {
-          console.log("valid");
-        } else {
-          console.log(responseJSON["error"]);
-        }
-        console.log("Token updated successfully");
       } catch (e) {
-        console.log("Error to update token " + e);
+        setError("Error to update token " + e);
       }
     }
   }
@@ -188,7 +163,6 @@ function SignUp() {
             onBlur={handleBlur("dob")}
             value={values.dob}
           />
-          <Text>date: {values.dob}</Text>
 
           <TextInput
             style={[
@@ -205,12 +179,6 @@ function SignUp() {
             onBlur={handleBlur("displayName")}
             value={values.displayName}
           />
-          {errors.displayName && touched.displayName && (
-            <Text>
-              {errors.displayName} value{" "}
-              {errors.name && touched.displayName ? "true" : "false"}
-            </Text>
-          )}
 
           <TextInput
             style={[
@@ -230,13 +198,6 @@ function SignUp() {
             onBlur={handleBlur("email")}
             value={values.email}
           />
-          {errors.email && touched.email && (
-            <Text>
-              {errors.email} value{" "}
-              {errors.email && values.email ? "true" : "false"}
-            </Text>
-          )}
-          <Text>{values.email} value</Text>
 
           <TextInput
             style={[
@@ -254,16 +215,12 @@ function SignUp() {
             onBlur={handleBlur("password")}
             value={values.password}
           />
-          {errors.password && touched.password && (
-            <Text>
-              {errors.password} value{" "}
-              {errors.password && touched.password ? "true" : "false"}
+
+          {error && (
+            <Text style={styles.error} class="error" textWrap="true">
+              {error}
             </Text>
           )}
-
-          <Text style={styles.error} class="error" textWrap="true">
-            {error}
-          </Text>
 
           <View style={{ opacity: !isValid ? "0.5" : "1" }}>
             <TouchableOpacity
