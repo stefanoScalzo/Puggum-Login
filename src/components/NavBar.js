@@ -1,13 +1,5 @@
-import { Component, useState } from "react";
-import {
-  Pressable,
-  Button,
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-} from "react-native";
+import { Component } from "react";
+import { Pressable, Image, Text, View } from "react-native";
 
 import LogIn from "./LogIn/LogIn.js";
 import SignUp from "./SignUp/SignUp.js";

@@ -1,5 +1,7 @@
 import { StyleSheet, Dimensions } from "react-native";
-
+/**
+ * This is the style sheet for the log in/sign up forms.
+ */
 const styles = StyleSheet.create({
   textForgotPass: {
     fontSize: 19,
