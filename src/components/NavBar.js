@@ -3,7 +3,7 @@ import { Pressable, Image, Text, View } from "react-native";
 
 import LogIn from "./LogIn/LogIn.js";
 import SignUp from "./SignUp/SignUp.js";
-import styles from "./styles.js";
+import styles from "../global/global-styles.js";
 
 /**
  * @description This class is used to display the nav bar

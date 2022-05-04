@@ -3,7 +3,8 @@ import { Alert, TouchableOpacity, Text, View, TextInput } from "react-native";
 /*https://github.com/xgfe/react-native-datepicker*/
 import DatePicker from "react-native-datepicker";
 import { environment } from "../../environment/environment";
-import styles from "../styles.js";
+import styles from "../../global/global-styles.js";
+import globalConstant from "../../global/global-constant.js";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { terms } from "../../edit-profile/terms";
@@ -29,9 +30,9 @@ function SignUp() {
 
   /**
    * Function used to alert the user to ask if they agree to the term of use
-   * @param {*} data
+   * @param {*} inputData is the values entered by the user
    */
-  const onRegisterTap = (data) => {
+  const onRegisterTap = (inputData) => {
     Alert.alert("Term Of Use", terms, [
       {
         text: "No",
@@ -42,26 +43,26 @@ function SignUp() {
       },
       {
         text: "I agree to the Terms",
-        onPress: () => agreeOption(data),
+        onPress: () => registerOption(inputData),
       },
     ]);
   };
 
   /**
    * async helper function to register the user
-   * @param {*} data is the values entered by the user
+   * @param {*} inputData is the values entered by the user
    */
-  async function agreeOption(data) {
-    let datePieces = data.dob.split("-");
+  async function registerOption(inputData) {
+    let datePieces = inputData.dob.split("-");
     //create a new User
     const newUser = {
-      displayName: data.displayName,
-      email: data.email,
+      displayName: inputData.displayName,
+      email: inputData.email,
       year: datePieces[0],
       month: datePieces[1],
       day: datePieces[2],
-      password: data.password,
-      dob: data.dob,
+      password: inputData.password,
+      dob: inputData.dob,
     };
     let url = environment["authHost"] + "api/user/post/registerGoogle";
     try {
@@ -76,9 +77,14 @@ function SignUp() {
       if (responseJSON["status"] == "valid") {
         await SecureStore.setItemAsync("jwt", responseJSON["data"]["jwt"]);
         updateTokenInDatabase();
-        console.log("logged in");
       } else {
-        setError("There was an error " + responseJSON["error"]);
+        if (responseJSON["error"]["code"] == "ER_DUP_ENTRY") {
+          setError(
+            "A user with this email address or username has already registered with us."
+          );
+        } else {
+          setError(responseJSON["error"]["code"]);
+        }
       }
     } catch (e) {
       setError("There was an error " + e);
@@ -132,33 +138,20 @@ function SignUp() {
       }) => (
         <View>
           <DatePicker
-            style={styles.datePicker}
+            style={[
+              styles.datePicker,
+              {
+                paddingBottom: globalConstant.padding,
+                marginBottom: globalConstant.inputMarginBottom,
+              },
+            ]}
             date={values.dob}
             mode="date"
             placeholder="Date of Birth"
             format="YYYY-MM-DD"
-            // minDate="1920-05-01"
-            // maxDate="2020-08-01"
             confirmBtnText="Confirm"
             cancelBtnText="Cancel"
-            customStyles={{
-              dateIcon: {
-                display: "none",
-              },
-              dateInput: {
-                borderWidth: 0,
-                alignItems: "flex-start",
-                justifyContent: "flex-end",
-              },
-              dateText: {
-                color: "white",
-                fontSize: 16,
-              },
-              placeholderText: {
-                color: "white",
-                fontSize: 16,
-              },
-            }}
+            customStyles={globalConstant.customStyles}
             onDateChange={handleChange("dob")}
             onBlur={handleBlur("dob")}
             value={values.dob}
@@ -167,6 +160,7 @@ function SignUp() {
           <TextInput
             style={[
               styles.formInput,
+              globalConstant.formInputMarginPadding,
               {
                 borderColor:
                   errors.displayName && touched.displayName ? "red" : "white",
@@ -183,6 +177,7 @@ function SignUp() {
           <TextInput
             style={[
               styles.formInput,
+              globalConstant.formInputMarginPadding,
               {
                 borderColor:
                   (errors.email && touched.email) ||
@@ -202,6 +197,7 @@ function SignUp() {
           <TextInput
             style={[
               styles.formInput,
+              globalConstant.formInputMarginPadding,
               {
                 borderColor:
                   errors.password && touched.password ? "red" : "white",
@@ -217,14 +213,28 @@ function SignUp() {
           />
 
           {error && (
-            <Text style={styles.error} class="error" textWrap="true">
+            <Text
+              style={[
+                styles.error,
+                {
+                  marginBottom: globalConstant.errorMarginSize,
+                  marginTop: globalConstant.errorMarginSize,
+                },
+              ]}
+            >
               {error}
             </Text>
           )}
 
           <View style={{ opacity: !isValid ? "0.5" : "1" }}>
             <TouchableOpacity
-              style={styles.buttonSignUp}
+              style={[
+                styles.buttonSignUp,
+                {
+                  marginTop: globalConstant.btnMarginTop,
+                  height: globalConstant.btnHeight,
+                },
+              ]}
               disabled={!isValid}
               onPress={handleSubmit}
             >
@@ -232,12 +242,28 @@ function SignUp() {
             </TouchableOpacity>
           </View>
 
-          {/* <TouchableOpacity style={styles.buttonSignUpnwithAG}>
-                    <Text style={styles.textAG}>Sign up with Apple</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonSignUpnwithAG}>
-                    <Text style={styles.textAG}>Sign up with Google</Text>
-                </TouchableOpacity> */}
+          {/* <TouchableOpacity
+            style={[
+              styles.buttonSignInwithAG,
+              {
+                marginTop: globalConstant.btnMarginTop,
+                height: globalConstant.btnHeight,
+              },
+            ]}
+          >
+            <Text style={styles.textAG}>Sign In with Apple</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.buttonSignInwithAG,
+              {
+                marginTop: globalConstant.btnMarginTop,
+                height: globalConstant.btnHeight,
+              },
+            ]}
+          >
+            <Text style={styles.textAG}>Sign In with Google</Text>
+          </TouchableOpacity> */}
         </View>
       )}
     </Formik>

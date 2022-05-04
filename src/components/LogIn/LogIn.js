@@ -1,7 +1,8 @@
 import React from "react";
 import { TouchableOpacity, Text, View, TextInput, Alert } from "react-native";
 import { environment } from "../../environment/environment";
-import styles from "../styles.js";
+import styles from "../../global/global-styles.js";
+import globalConstant from "../../global/global-constant.js";
 import { Formik } from "formik";
 import * as yup from "yup";
 import * as SecureStore from "expo-secure-store";
@@ -41,12 +42,11 @@ function LogIn() {
       if (responseJSON["status"] == "valid") {
         await SecureStore.setItemAsync("jwt", responseJSON["data"]["jwt"]);
         updateTokenInDatabase();
-        console.log("logged in");
       } else {
         if (responseJSON["data"]) {
           setError(responseJSON["data"]["message"]);
         } else {
-          setError(responseJSON["error"]);
+          setError(responseJSON["error"]["code"]);
         }
       }
     } catch (e) {
@@ -146,6 +146,7 @@ function LogIn() {
           <TextInput
             style={[
               styles.formInput,
+              globalConstant.formInputMarginPadding,
               {
                 borderColor:
                   (errors.email && touched.email) ||
@@ -164,6 +165,7 @@ function LogIn() {
           <TextInput
             style={[
               styles.formInput,
+              globalConstant.formInputMarginPadding,
               {
                 borderColor:
                   errors.password && touched.password ? "red" : "white",
@@ -179,14 +181,28 @@ function LogIn() {
           />
 
           {error && (
-            <Text style={styles.error} class="error" textWrap="true">
+            <Text
+              style={[
+                styles.error,
+                {
+                  marginBottom: globalConstant.errorMarginSize,
+                  marginTop: globalConstant.errorMarginSize,
+                },
+              ]}
+            >
               {error}
             </Text>
           )}
 
           <View style={{ opacity: !isValid ? "0.5" : "1" }}>
             <TouchableOpacity
-              style={styles.buttonSignIn}
+              style={[
+                styles.buttonSignIn,
+                {
+                  marginTop: globalConstant.btnMarginTop,
+                  height: globalConstant.btnHeight,
+                },
+              ]}
               disabled={!isValid}
               onPress={handleSubmit}
             >
@@ -197,7 +213,13 @@ function LogIn() {
             style={{ opacity: !errors.email && values.email ? "1" : "0.5" }}
           >
             <TouchableOpacity
-              style={styles.buttonForgotPass}
+              style={[
+                styles.buttonForgotPass,
+                {
+                  marginTop: globalConstant.btnMarginTop,
+                  height: globalConstant.btnHeight,
+                },
+              ]}
               disabled={!errors.email && values.email ? false : true}
               onPress={() => onForgotTap(values.email)}
             >
@@ -205,12 +227,28 @@ function LogIn() {
             </TouchableOpacity>
           </View>
 
-          {/* <TouchableOpacity style={styles.buttonSignInwithAG}>
-                    <Text style={styles.textAG}>Sign In with Apple</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonSignInwithAG}>
-                    <Text style={styles.textAG}>Sign In with Google</Text>
-                </TouchableOpacity> */}
+          {/* <TouchableOpacity
+            style={[
+              styles.buttonSignInwithAG,
+              {
+                marginTop: globalConstant.btnMarginTop,
+                height: globalConstant.btnHeight,
+              },
+            ]}
+          >
+            <Text style={styles.textAG}>Sign In with Apple</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.buttonSignInwithAG,
+              {
+                marginTop: globalConstant.btnMarginTop,
+                height: globalConstant.btnHeight,
+              },
+            ]}
+          >
+            <Text style={styles.textAG}>Sign In with Google</Text>
+          </TouchableOpacity> */}
         </View>
       )}
     </Formik>

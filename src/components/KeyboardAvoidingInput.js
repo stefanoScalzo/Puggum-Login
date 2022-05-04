@@ -7,7 +7,7 @@ import {
   Keyboard,
   SafeAreaView,
 } from "react-native";
-import styles from "./styles.js";
+import styles from "../global/global-styles.js";
 
 /**
  * @description This function is used to wrap the children to prevent the keybord from hiding the inputs

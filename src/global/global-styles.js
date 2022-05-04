@@ -2,94 +2,85 @@ import { StyleSheet, Dimensions } from "react-native";
 /**
  * This is the style sheet for the log in/sign up forms.
  */
+
+const containerWidth="100%";
+const imgHeight=100;
+const imgWidth=100;
+const btnFontSize=19;
+const inputFontSize=16;
+const letterSpacing=0.25;
+const borderRadius=100;
+const btnmarginBottom=10;
+const borderWidth=1;
+const navBtnPaddingLeftRight="6%";
+const navBtnPaddingTopBottom="3%";
+const btnMargin="2%";
+
 const styles = StyleSheet.create({
   textForgotPass: {
-    fontSize: 19,
+    fontSize: btnFontSize,
     fontWeight: "bold",
-    letterSpacing: 0.25,
+    letterSpacing: letterSpacing,
     color: "darkviolet",
   },
   buttonForgotPass: {
     alignItems: "center",
     justifyContent: "center",
     borderColor: "darkviolet",
-    borderWidth: 1,
+    borderWidth: borderWidth,
     backgroundColor: "white",
-    borderRadius: 100,
-    marginTop: 10,
-    minHeight: 44,
-    height: 44,
+    borderRadius: borderRadius,
   },
 
   textSignIn: {
     color: "white",
     fontWeight: "bold",
-    fontSize: 19,
+    fontSize: btnFontSize,
   },
 
   buttonSignIn: {
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "darkviolet",
-    borderRadius: 100,
-    padding: 5,
-    marginTop: 10,
-    minHeight: 44,
-    height: 44,
+    borderRadius: borderRadius,
   },
+
   textAG: {
     color: "black",
     fontWeight: "bold",
-    fontSize: 19,
+    fontSize: btnFontSize,
   },
+
   buttonSignInwithAG: {
     alignItems: "center",
     justifyContent: "center",
     borderColor: "black",
-    borderWidth: 1,
+    borderWidth: borderWidth,
     backgroundColor: "white",
-    borderRadius: 100,
-    marginTop: 10,
-    minHeight: 44,
-    height: 44,
+    borderRadius: borderRadius,
   },
 
   error: {
     color: "red",
-    fontSize: 16,
-    marginBottom: "3%",
-    marginTop: "3%",
+    fontSize: inputFontSize,
   },
 
   formInput: {
-    fontSize: 16,
-    marginBottom: 5,
-    borderBottomWidth: 1,
+    fontSize: inputFontSize,
+    borderBottomWidth: borderWidth,
     borderColor: "white",
-    paddingBottom: 5,
-    marginTop: "5%",
   },
-
-  errorInput: {
-    fontSize: 16,
-    marginBottom: 5,
-    borderBottomWidth: 1,
-    borderColor: "red",
-    paddingBottom: 5,
-    marginTop: "5%",
-  },
+  
   datePicker: {
-    marginBottom: 5,
-    borderBottomWidth: 1,
+    borderBottomWidth: borderWidth,
     borderColor: "white",
-    paddingBottom: 5,
     width: "100%",
   },
 
   textSignUp: {
-    fontSize: 19,
+    fontSize: btnFontSize,
     fontWeight: "bold",
-    letterSpacing: 0.25,
+    letterSpacing: letterSpacing,
     color: "darkviolet",
   },
 
@@ -97,33 +88,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderColor: "darkviolet",
-    borderWidth: 1,
+    borderWidth: borderWidth,
     backgroundColor: "white",
-    borderRadius: 100,
-    marginTop: 10,
-    minHeight: 44,
-    height: 44,
+    borderRadius: borderRadius,
   },
   textAG: {
     color: "black",
     fontWeight: "bold",
-    fontSize: 19,
+    fontSize: btnFontSize,
   },
   buttonSignUpnwithAG: {
     alignItems: "center",
     justifyContent: "center",
     borderColor: "black",
-    borderWidth: 1,
+    borderWidth: borderWidth,
     backgroundColor: "white",
-    borderRadius: 100,
-    marginTop: 10,
-    minHeight: 44,
-    height: 44,
+    borderRadius: borderRadius,
   },
 
   //styles for NavBar.js
   mainContainer: {
-    width: "100%",
+    width: containerWidth,
     padding: "5%",
   },
   imageContainer: {
@@ -131,25 +116,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   container: {
-    width: "100%",
+    width: containerWidth,
     flexDirection: "row",
     justifyContent: "center",
   },
 
   text: {
-    fontSize: 19,
-    letterSpacing: 0.25,
+    fontSize: btnFontSize,
+    letterSpacing: letterSpacing,
     color: "white",
   },
   button: {
     alignItems: "center",
     justifyContent: "center",
-    paddingLeft: "6%",
-    paddingRight: "6%",
-    paddingTop: "3%",
-    paddingBottom: "3%",
-    marginBottom: 10,
-    margin: "2%",
+    paddingLeft: navBtnPaddingLeftRight,
+    paddingRight: navBtnPaddingLeftRight,
+    paddingTop: navBtnPaddingTopBottom,
+    paddingBottom: navBtnPaddingTopBottom,
+    marginBottom: btnmarginBottom,
+    margin: btnMargin,
   },
 
   buttonActive: {
@@ -157,20 +142,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignItems: "center",
     justifyContent: "center",
-    paddingLeft: "6%",
-    paddingRight: "6%",
-    paddingTop: "3%",
-    paddingBottom: "3%",
-    marginBottom: 10,
-    margin: "2%",
+    paddingLeft: navBtnPaddingLeftRight,
+    paddingRight: navBtnPaddingLeftRight,
+    paddingTop: navBtnPaddingTopBottom,
+    paddingBottom: navBtnPaddingTopBottom,
+    marginBottom: btnmarginBottom,
+    margin: btnMargin,
   },
 
   profileImage: {
     alignItems: "center",
     justifyContent: "center",
-    width: 100,
-    height: 100,
-    borderRadius: 100,
+    width: imgWidth,
+    height: imgHeight,
+    borderRadius: borderRadius,
   },
 
   //styles for App.js
@@ -187,8 +172,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   image: {
-    width: 100,
-    height: 100,
+    width: imgWidth,
+    height: imgHeight,
     borderRadius: 50,
   },
   //styles for KeyboardAvoidingInputs.js
