@@ -60,7 +60,7 @@ export default function App() {
       start={{ x: 0.3, y: 0.3 }}
       style={styles.appContainer}
     >
-      <KeyboardAvoidingInput>
+      
         <View style={styles.appContainer}>
           <Image source={require("./assets/logo_horizontal_white.png")} />
           <NavBar></NavBar>
@@ -74,7 +74,6 @@ export default function App() {
         />
       )} */}
         </View>
-      </KeyboardAvoidingInput>
     </LinearGradient>
   );
 }

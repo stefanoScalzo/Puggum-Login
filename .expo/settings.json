@@ -5,6 +5,6 @@
   "minify": false,
   "urlRandomness": null,
   "https": false,
-  "scheme": "exp+puggum-react-login",
+  "scheme": null,
   "devClient": false
 }
