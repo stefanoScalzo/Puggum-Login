@@ -6,7 +6,7 @@ import { Button, Image, StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import NavBar from "./src/components/NavBar.js";
 import KeyboardAvoidingInput from "./src/components/KeyboardAvoidingInput.js";
-import styles from "./src/components/styles";
+import styles from "./src/global/global-styles";
 
 WebBrowser.maybeCompleteAuthSession();
 

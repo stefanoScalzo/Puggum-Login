@@ -199,8 +199,8 @@ function LogIn() {
               style={[
                 styles.buttonSignIn,
                 {
-                  marginTop: globalConstant.btnMarginTop,
-                  height: globalConstant.btnHeight,
+                  marginTop: globalConstant.buttonMarginTop,
+                  height: globalConstant.buttonHeight,
                 },
               ]}
               disabled={!isValid}
@@ -214,10 +214,10 @@ function LogIn() {
           >
             <TouchableOpacity
               style={[
-                styles.buttonForgotPass,
+                styles.buttonSignUpForgotPassAG,
+                globalConstant.signUpForgotPassAGButton,
                 {
-                  marginTop: globalConstant.btnMarginTop,
-                  height: globalConstant.btnHeight,
+                  borderColor: globalConstant.darkVioletColor,
                 },
               ]}
               disabled={!errors.email && values.email ? false : true}
@@ -229,10 +229,10 @@ function LogIn() {
 
           {/* <TouchableOpacity
             style={[
-              styles.buttonSignInwithAG,
+              styles.buttonSignUpForgotPassAG,
+              globalConstant.signUpForgotPassAGButton,
               {
-                marginTop: globalConstant.btnMarginTop,
-                height: globalConstant.btnHeight,
+                borderColor: globalConstant.blackColor,
               },
             ]}
           >
@@ -240,10 +240,10 @@ function LogIn() {
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              styles.buttonSignInwithAG,
+              styles.buttonSignUpForgotPassAG,
+              globalConstant.signUpForgotPassAGButton,
               {
-                marginTop: globalConstant.btnMarginTop,
-                height: globalConstant.btnHeight,
+                borderColor: globalConstant.blackColor,
               },
             ]}
           >

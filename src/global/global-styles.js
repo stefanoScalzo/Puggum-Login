@@ -3,39 +3,26 @@ import { StyleSheet, Dimensions } from "react-native";
  * This is the style sheet for the log in/sign up forms.
  */
 
-const containerWidth="100%";
-const imgHeight=100;
-const imgWidth=100;
-const btnFontSize=19;
-const inputFontSize=16;
-const letterSpacing=0.25;
-const borderRadius=100;
-const btnmarginBottom=10;
-const borderWidth=1;
-const navBtnPaddingLeftRight="6%";
-const navBtnPaddingTopBottom="3%";
-const btnMargin="2%";
+const containerWidth = "100%";
+const imageHeight = 100;
+const imageWidth = 100;
+const buttonFontSize = 19;
+const inputFontSize = 16;
+const letterSpacing = 0.25;
+const borderRadius = 100;
+const borderWidth = 1;
 
 const styles = StyleSheet.create({
   textForgotPass: {
-    fontSize: btnFontSize,
+    fontSize: buttonFontSize,
     fontWeight: "bold",
     letterSpacing: letterSpacing,
     color: "darkviolet",
   },
-  buttonForgotPass: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: "darkviolet",
-    borderWidth: borderWidth,
-    backgroundColor: "white",
-    borderRadius: borderRadius,
-  },
-
   textSignIn: {
     color: "white",
     fontWeight: "bold",
-    fontSize: btnFontSize,
+    fontSize: buttonFontSize,
   },
 
   buttonSignIn: {
@@ -45,19 +32,15 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius,
   },
 
+  buttonSignUpForgotPassAG: {
+    borderWidth: borderWidth,
+    borderRadius: borderRadius,
+  },
+
   textAG: {
     color: "black",
     fontWeight: "bold",
-    fontSize: btnFontSize,
-  },
-
-  buttonSignInwithAG: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: "black",
-    borderWidth: borderWidth,
-    backgroundColor: "white",
-    borderRadius: borderRadius,
+    fontSize: buttonFontSize,
   },
 
   error: {
@@ -70,7 +53,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: borderWidth,
     borderColor: "white",
   },
-  
+
   datePicker: {
     borderBottomWidth: borderWidth,
     borderColor: "white",
@@ -78,32 +61,10 @@ const styles = StyleSheet.create({
   },
 
   textSignUp: {
-    fontSize: btnFontSize,
+    fontSize: buttonFontSize,
     fontWeight: "bold",
     letterSpacing: letterSpacing,
     color: "darkviolet",
-  },
-
-  buttonSignUp: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: "darkviolet",
-    borderWidth: borderWidth,
-    backgroundColor: "white",
-    borderRadius: borderRadius,
-  },
-  textAG: {
-    color: "black",
-    fontWeight: "bold",
-    fontSize: btnFontSize,
-  },
-  buttonSignUpnwithAG: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: "black",
-    borderWidth: borderWidth,
-    backgroundColor: "white",
-    borderRadius: borderRadius,
   },
 
   //styles for NavBar.js
@@ -122,19 +83,13 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    fontSize: btnFontSize,
+    fontSize: buttonFontSize,
     letterSpacing: letterSpacing,
     color: "white",
   },
   button: {
     alignItems: "center",
     justifyContent: "center",
-    paddingLeft: navBtnPaddingLeftRight,
-    paddingRight: navBtnPaddingLeftRight,
-    paddingTop: navBtnPaddingTopBottom,
-    paddingBottom: navBtnPaddingTopBottom,
-    marginBottom: btnmarginBottom,
-    margin: btnMargin,
   },
 
   buttonActive: {
@@ -142,19 +97,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignItems: "center",
     justifyContent: "center",
-    paddingLeft: navBtnPaddingLeftRight,
-    paddingRight: navBtnPaddingLeftRight,
-    paddingTop: navBtnPaddingTopBottom,
-    paddingBottom: navBtnPaddingTopBottom,
-    marginBottom: btnmarginBottom,
-    margin: btnMargin,
   },
 
   profileImage: {
     alignItems: "center",
     justifyContent: "center",
-    width: imgWidth,
-    height: imgHeight,
+    width: imageHeight,
+    height: imageHeight,
     borderRadius: borderRadius,
   },
 
@@ -172,8 +121,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   image: {
-    width: imgWidth,
-    height: imgHeight,
+    width: imageWidth,
+    height: imageHeight,
     borderRadius: 50,
   },
   //styles for KeyboardAvoidingInputs.js

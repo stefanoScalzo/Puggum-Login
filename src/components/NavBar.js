@@ -4,6 +4,7 @@ import { Pressable, Image, Text, View } from "react-native";
 import LogIn from "./LogIn/LogIn.js";
 import SignUp from "./SignUp/SignUp.js";
 import styles from "../global/global-styles.js";
+import globalConstant from "../global/global-constant.js";
 
 /**
  * @description This class is used to display the nav bar
@@ -37,8 +38,8 @@ class NavBar extends Component {
             onPress={() => this.setState({ activeButton: "first" })}
             style={
               this.state.activeButton === "first"
-                ? styles.buttonActive
-                : styles.button
+                ? [styles.buttonActive, globalConstant.buttonNavMarginPadding]
+                : [styles.button, globalConstant.buttonNavMarginPadding]
             }
           >
             <Text style={styles.text}>Login</Text>
@@ -48,8 +49,8 @@ class NavBar extends Component {
             onPress={() => this.setState({ activeButton: "second" })}
             style={
               this.state.activeButton === "second"
-                ? styles.buttonActive
-                : styles.button
+                ? [styles.buttonActive, globalConstant.buttonNavMarginPadding]
+                : [styles.button, globalConstant.buttonNavMarginPadding]
             }
           >
             <Text style={styles.text}>Sign Up</Text>

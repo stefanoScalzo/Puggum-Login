@@ -4,14 +4,14 @@ module.exports = {
   padding: 5,
 
   //buttons margin and height size
-  btnMarginTop: 10,
-  btnHeight: 44,
+  buttonMarginTop: 10,
+  buttonHeight: 44,
 
   //error margin sizes
   errorMarginSize: "3%",
 
   //use to style datePicker
-  customStyles: {
+  datePickerStyles: {
     dateIcon: {
       display: "none",
     },
@@ -36,4 +36,27 @@ module.exports = {
     marginTop: "5%",
     marginBottom: 5,
   },
+
+  //styles for sign up/forgot password/Apple/Goggle buttons
+  signUpForgotPassAGButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
+    marginTop: 10,
+    height: 44,
+  },
+
+  //Margin/Padding sizes for the nav buttons
+  buttonNavMarginPadding: {
+    paddingLeft: "6%",
+    paddingRight: "6%",
+    paddingTop: "3%",
+    paddingBottom: "3%",
+    marginBottom: 10,
+    margin: "2%",
+  },
+
+  //colors
+  blackColor: "black",
+  darkVioletColor: "darkviolet",
 };

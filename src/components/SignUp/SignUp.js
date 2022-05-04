@@ -151,7 +151,7 @@ function SignUp() {
             format="YYYY-MM-DD"
             confirmBtnText="Confirm"
             cancelBtnText="Cancel"
-            customStyles={globalConstant.customStyles}
+            customStyles={globalConstant.datePickerStyles}
             onDateChange={handleChange("dob")}
             onBlur={handleBlur("dob")}
             value={values.dob}
@@ -229,10 +229,10 @@ function SignUp() {
           <View style={{ opacity: !isValid ? "0.5" : "1" }}>
             <TouchableOpacity
               style={[
-                styles.buttonSignUp,
+                styles.buttonSignUpForgotPassAG,
+                globalConstant.signUpForgotPassAGButton,
                 {
-                  marginTop: globalConstant.btnMarginTop,
-                  height: globalConstant.btnHeight,
+                  borderColor: globalConstant.darkVioletColor,
                 },
               ]}
               disabled={!isValid}
@@ -244,10 +244,10 @@ function SignUp() {
 
           {/* <TouchableOpacity
             style={[
-              styles.buttonSignInwithAG,
+              styles.buttonSignUpForgotPassAG,
+              globalConstant.signUpForgotPassAGButton,
               {
-                marginTop: globalConstant.btnMarginTop,
-                height: globalConstant.btnHeight,
+                borderColor: globalConstant.blackColor,
               },
             ]}
           >
@@ -255,10 +255,10 @@ function SignUp() {
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              styles.buttonSignInwithAG,
+              styles.buttonSignUpForgotPassAG,
+              globalConstant.signUpForgotPassAGButton,
               {
-                marginTop: globalConstant.btnMarginTop,
-                height: globalConstant.btnHeight,
+                borderColor: globalConstant.blackColor,
               },
             ]}
           >
