@@ -3,14 +3,38 @@ module.exports = {
   //padding size
   padding: 5,
 
-  //buttons margin and height size
-  buttonMarginTop: 10,
-  buttonHeight: 44,
-
   //error margin sizes
   errorMarginSize: "3%",
 
-  //use to style datePicker
+  //Margin/Padding sizes for the nav buttons
+  buttonNavMarginPadding: {
+    paddingLeft: "6%",
+    paddingRight: "6%",
+    paddingTop: "3%",
+    paddingBottom: "3%",
+    marginBottom: 10,
+    margin: "2%",
+  },
+
+  //Margin/Padding sizes for form input
+  formInputMarginPadding: {
+    paddingBottom: 5,
+    marginTop: "5%",
+    marginBottom: 5,
+  },
+
+  //form buttons styles
+  formButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+    height: 44,
+  },
+
+  //border width size of the form's buttons
+  formButtonBorderWidth: 1,
+
+  //datePicker style
   datePickerStyles: {
     dateIcon: {
       display: "none",
@@ -30,33 +54,11 @@ module.exports = {
     },
   },
 
-  //Margin/Padding sizes for form input
-  formInputMarginPadding: {
-    paddingBottom: 5,
-    marginTop: "5%",
-    marginBottom: 5,
-  },
-
-  //styles for sign up/forgot password/Apple/Goggle buttons
-  signUpForgotPassAGButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "white",
-    marginTop: 10,
-    height: 44,
-  },
-
-  //Margin/Padding sizes for the nav buttons
-  buttonNavMarginPadding: {
-    paddingLeft: "6%",
-    paddingRight: "6%",
-    paddingTop: "3%",
-    paddingBottom: "3%",
-    marginBottom: 10,
-    margin: "2%",
-  },
-
   //colors
+  whiteColor: "white",
   blackColor: "black",
   darkVioletColor: "darkviolet",
+  darkVioletLinearColor: ["darkviolet", "#1D001D"],
+
+  linearDirection: { x: 0.3, y: 0.3 },
 };

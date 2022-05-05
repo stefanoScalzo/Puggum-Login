@@ -7,6 +7,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import NavBar from "./src/components/NavBar.js";
 import KeyboardAvoidingInput from "./src/components/KeyboardAvoidingInput.js";
 import styles from "./src/global/global-styles";
+import globalConstant from "./src/global/global-constant.js";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -56,8 +57,8 @@ export default function App() {
 
   return (
     <LinearGradient
-      colors={["darkviolet", "#1D001D"]}
-      start={{ x: 0.3, y: 0.3 }}
+      colors={globalConstant.darkVioletLinearColor}
+      start={globalConstant.linearDirection}
       style={styles.appContainer}
     >
       <KeyboardAvoidingInput>

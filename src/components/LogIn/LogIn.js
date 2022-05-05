@@ -30,6 +30,7 @@ function LogIn() {
    */
   async function onSignInTap(data) {
     const url = environment["authHost"] + "api/user/post/login";
+
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -80,6 +81,7 @@ function LogIn() {
     const userEmail = {
       email: valueEmail,
     };
+
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -162,6 +164,7 @@ function LogIn() {
             onBlur={handleBlur("email")}
             value={values.email}
           />
+
           <TextInput
             style={[
               styles.formInput,
@@ -197,10 +200,10 @@ function LogIn() {
           <View style={{ opacity: !isValid ? "0.5" : "1" }}>
             <TouchableOpacity
               style={[
-                styles.buttonSignIn,
+                styles.formButton,
+                globalConstant.formButton,
                 {
-                  marginTop: globalConstant.buttonMarginTop,
-                  height: globalConstant.buttonHeight,
+                  backgroundColor: globalConstant.darkVioletColor,
                 },
               ]}
               disabled={!isValid}
@@ -209,15 +212,18 @@ function LogIn() {
               <Text style={styles.textSignIn}>Sign In</Text>
             </TouchableOpacity>
           </View>
+
           <View
             style={{ opacity: !errors.email && values.email ? "1" : "0.5" }}
           >
             <TouchableOpacity
               style={[
-                styles.buttonSignUpForgotPassAG,
-                globalConstant.signUpForgotPassAGButton,
+                styles.formButton,
+                globalConstant.formButton,
                 {
                   borderColor: globalConstant.darkVioletColor,
+                  borderWidth: globalConstant.formButtonBorderWidth,
+                  backgroundColor: globalConstant.whiteColor,
                 },
               ]}
               disabled={!errors.email && values.email ? false : true}
@@ -229,10 +235,12 @@ function LogIn() {
 
           {/* <TouchableOpacity
             style={[
-              styles.buttonSignUpForgotPassAG,
-              globalConstant.signUpForgotPassAGButton,
+              styles.formButton,
+              globalConstant.formButton,
               {
                 borderColor: globalConstant.blackColor,
+                borderWidth: globalConstant.formButtonBorderWidth,
+                backgroundColor: globalConstant.whiteColor,
               },
             ]}
           >
@@ -240,10 +248,12 @@ function LogIn() {
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              styles.buttonSignUpForgotPassAG,
-              globalConstant.signUpForgotPassAGButton,
+              styles.formButton,
+              globalConstant.formButton,
               {
                 borderColor: globalConstant.blackColor,
+                borderWidth: globalConstant.formButtonBorderWidth,
+                backgroundColor: globalConstant.whiteColor,
               },
             ]}
           >

@@ -25,6 +25,7 @@ function SignUp() {
       .required("Email is required"),
     password: yup.string().required("Password is required"),
   });
+
   //use to change the error message displayed to the user
   const [error, setError] = React.useState(null);
 
@@ -54,6 +55,7 @@ function SignUp() {
    */
   async function registerOption(inputData) {
     let datePieces = inputData.dob.split("-");
+
     //create a new User
     const newUser = {
       displayName: inputData.displayName,
@@ -64,7 +66,8 @@ function SignUp() {
       password: inputData.password,
       dob: inputData.dob,
     };
-    let url = environment["authHost"] + "api/user/post/registerGoogle";
+
+    const url = environment["authHost"] + "api/user/post/registerGoogle";
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -229,10 +232,12 @@ function SignUp() {
           <View style={{ opacity: !isValid ? "0.5" : "1" }}>
             <TouchableOpacity
               style={[
-                styles.buttonSignUpForgotPassAG,
-                globalConstant.signUpForgotPassAGButton,
+                styles.formButton,
+                globalConstant.formButton,
                 {
                   borderColor: globalConstant.darkVioletColor,
+                  borderWidth: globalConstant.formButtonBorderWidth,
+                  backgroundColor: globalConstant.whiteColor,
                 },
               ]}
               disabled={!isValid}
@@ -244,10 +249,12 @@ function SignUp() {
 
           {/* <TouchableOpacity
             style={[
-              styles.buttonSignUpForgotPassAG,
-              globalConstant.signUpForgotPassAGButton,
+              styles.formButton,
+              globalConstant.formButton,
               {
                 borderColor: globalConstant.blackColor,
+                borderWidth: globalConstant.formButtonBorderWidth,
+                backgroundColor: globalConstant.whiteColor,
               },
             ]}
           >
@@ -255,10 +262,12 @@ function SignUp() {
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              styles.buttonSignUpForgotPassAG,
-              globalConstant.signUpForgotPassAGButton,
+              styles.formButton,
+              globalConstant.formButton,
               {
                 borderColor: globalConstant.blackColor,
+                borderWidth: globalConstant.formButtonBorderWidth,
+                backgroundColor: globalConstant.whiteColor,
               },
             ]}
           >

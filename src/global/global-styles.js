@@ -1,8 +1,7 @@
 import { StyleSheet, Dimensions } from "react-native";
 /**
- * This is the style sheet for the log in/sign up forms.
+ * @description This is the style sheet for the Log In and Sign Up forms.
  */
-
 const containerWidth = "100%";
 const imageHeight = 100;
 const imageWidth = 100;
@@ -25,15 +24,7 @@ const styles = StyleSheet.create({
     fontSize: buttonFontSize,
   },
 
-  buttonSignIn: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "darkviolet",
-    borderRadius: borderRadius,
-  },
-
-  buttonSignUpForgotPassAG: {
-    borderWidth: borderWidth,
+  formButton: {
     borderRadius: borderRadius,
   },
 
@@ -72,10 +63,12 @@ const styles = StyleSheet.create({
     width: containerWidth,
     padding: "5%",
   },
+
   imageContainer: {
     alignItems: "center",
     justifyContent: "center",
   },
+
   container: {
     width: containerWidth,
     flexDirection: "row",
@@ -87,6 +80,7 @@ const styles = StyleSheet.create({
     letterSpacing: letterSpacing,
     color: "white",
   },
+
   button: {
     alignItems: "center",
     justifyContent: "center",
@@ -117,18 +111,21 @@ const styles = StyleSheet.create({
   profile: {
     alignItems: "center",
   },
+
   name: {
     fontSize: 20,
   },
+
   image: {
     width: imageWidth,
     height: imageHeight,
     borderRadius: 50,
   },
+
   //styles for KeyboardAvoidingInputs.js
   keyboardAvoidingViewStyle: {
     flex: 1,
-    width: Dimensions.get("window").width,
+    width: Dimensions.get("screen").width,
   },
 });
 
