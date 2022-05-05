@@ -3,6 +3,11 @@ import * as Facebook from "expo-auth-session/providers/facebook";
 import * as WebBrowser from "expo-web-browser";
 import * as React from "react";
 import { Button, Image, StyleSheet, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import NavBar from "./src/components/NavBar.js";
+import KeyboardAvoidingInput from "./src/components/KeyboardAvoidingInput.js";
+import styles from "./src/global/global-styles";
+import globalConstant from "./src/global/global-constant.js";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -51,8 +56,16 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      {user ? (
+    <LinearGradient
+      colors={globalConstant.darkVioletLinearColor}
+      start={globalConstant.linearDirection}
+      style={styles.appContainer}
+    >
+      <KeyboardAvoidingInput>
+        <View style={styles.appContainer}>
+          <Image source={require("./assets/logo_horizontal_white.png")} />
+          <NavBar></NavBar>
+          {/* {user ? (
         <Profile user={user} />
       ) : (
         <Button
@@ -60,8 +73,10 @@ export default function App() {
           title="Open FB Auth"
           onPress={handlePressAsync}
         />
-      )}
-    </View>
+      )} */}
+        </View>
+      </KeyboardAvoidingInput>
+    </LinearGradient>
   );
 }
 
@@ -74,22 +89,3 @@ function Profile({ user }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  profile: {
-    alignItems: "center",
-  },
-  name: {
-    fontSize: 20,
-  },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-});
