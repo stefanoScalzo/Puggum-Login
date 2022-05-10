@@ -9,7 +9,8 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { terms } from "../../edit-profile/terms";
 import * as SecureStore from "expo-secure-store";
-
+import AppleAuth from "../AppleAuth/AppleAuth";
+import * as AppleAuthentication from "expo-apple-authentication";
 /**
  * @description This class is used to display the Sign Up form
  * where the user can register
@@ -54,19 +55,24 @@ function SignUp() {
    * @param {*} inputData is the values entered by the user
    */
   async function registerOption(inputData) {
-    let datePieces = inputData.dob.split("-");
+    var newUser="";
+    if (inputData.appleToken) {
+       newUser = inputData;
+      console.log(newUser);
+    } else {
+      let datePieces = inputData.dob.split("-");
 
-    //create a new User
-    const newUser = {
-      displayName: inputData.displayName,
-      email: inputData.email,
-      year: datePieces[0],
-      month: datePieces[1],
-      day: datePieces[2],
-      password: inputData.password,
-      dob: inputData.dob,
-    };
-
+      //create a new User
+       newUser = {
+        displayName: inputData.displayName,
+        email: inputData.email,
+        year: datePieces[0],
+        month: datePieces[1],
+        day: datePieces[2],
+        password: inputData.password,
+        dob: inputData.dob,
+      };
+    }
     const url = environment["authHost"] + "api/user/post/registerGoogle";
     try {
       const response = await fetch(url, {
@@ -115,6 +121,105 @@ function SignUp() {
         });
       } catch (e) {
         setError("Error to update token " + e);
+      }
+    }
+  }
+
+  /**
+   * Function used to alert the user to let them know their apple email is invalid
+   * @param {*} inputData is the values entered by the user
+   */
+  const showAlertApple = (inputData) => {
+    Alert.alert(
+      "Warning",
+      "There was no email from that response. If it is not your first time trying to autofill with apple, do the following and try again. Settings > Tap your name > Password & Security > Apps Using Apple Id > Puggum > Stop using Apple Id",
+      [
+        {
+          text: "Okay",
+        },
+      ]
+    );
+  };
+
+  /**
+   * async function used to check if the email is valid or not
+   */
+  async function checkForValidEmail(appleUserRegister) {
+    console.log("checkForValidEmail");
+    const url =
+      environment["host"] +
+      "api/user/get/usernameEmailValid?email=" +
+      appleUserRegister.email +
+      "&displayName=" +
+      appleUserRegister.displayName;
+    console.log(url);
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      let responseJSON = await response.json();
+      console.log(responseJSON["status"]);
+      if (responseJSON["status"] == "invalid") {
+        setError(responseJSON["message"]);
+        return false;
+      } else {
+        setError(responseJSON[""]);
+        return true;
+      }
+    } catch (e) {
+      setError("There was an error " + e);
+      return false;
+    }
+  }
+
+  async function onAppleButtonPress() {
+    var userFullName = "";
+    console.log("Apple Pressed");
+    try {
+      // AppleAuthentication.refreshAsync();
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+      console.log(credential);
+
+      if (credential.fullName.givenName && credential.fullName.familyName) {
+        userFullName = credential.fullName.givenName.concat(
+          credential.fullName.familyName
+        );
+      }
+      if (credential.email) {
+        //create new user object
+        const appleUserRegister = {
+          displayName: userFullName,
+          appleToken: credential.identityToken,
+          email: credential.email,
+          password: "",
+        };
+        console.log(appleUserRegister);
+        console.log(checkForValidEmail(appleUserRegister));
+        //if email valid, create new user by calling register function
+        if (checkForValidEmail(appleUserRegister)) {
+          console.log("true");
+          onRegisterTap(appleUserRegister);
+        } else {
+          console.log("false");
+        }
+      }
+
+      if (!credential.email) {
+        showAlertApple();
+      }
+    } catch (e) {
+      if (e.code === "ERR_CANCELED") {
+        console.log(e);
+      } else {
+        console.log(e);
       }
     }
   }
@@ -247,19 +352,17 @@ function SignUp() {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity
-            style={[
-              styles.formButton,
-              globalConstant.formButton,
-              {
-                borderColor: globalConstant.blackColor,
-                borderWidth: globalConstant.formButtonBorderWidth,
-                backgroundColor: globalConstant.whiteColor,
-              },
-            ]}
-          >
-            <Text style={styles.textAG}>Sign Up with Apple</Text>
-          </TouchableOpacity>
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={
+              AppleAuthentication.AppleAuthenticationButtonType.SIGN_UP
+            }
+            buttonStyle={
+              AppleAuthentication.AppleAuthenticationButtonStyle.WHITE_OUTLINE
+            }
+            cornerRadius={100}
+            style={[globalConstant.formButton]}
+            onPress={onAppleButtonPress}
+          />
           {/* <TouchableOpacity
             style={[
               styles.formButton,
