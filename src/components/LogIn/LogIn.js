@@ -1,11 +1,20 @@
 import React from "react";
-import { TouchableOpacity, Text, View, TextInput, Alert } from "react-native";
+import {
+  Image,
+  TouchableOpacity,
+  Text,
+  View,
+  TextInput,
+  Alert,
+} from "react-native";
 import { environment } from "../../environment/environment";
 import styles from "../../global/global-styles.js";
 import globalConstant from "../../global/global-constant.js";
 import { Formik } from "formik";
 import * as yup from "yup";
 import * as SecureStore from "expo-secure-store";
+import { AppleButton } from "@invertase/react-native-apple-authentication";
+import { appleAuth } from "@invertase/react-native-apple-authentication";
 /**
  * @description This class is used to display the log in form
  * where the user can log in or reset their password
@@ -124,6 +133,59 @@ function LogIn() {
     }
   }
 
+  async function onAppleButtonPress() {
+    console.log("Apple Pressed");
+    // performs login request
+    const appleAuthRequestResponse = await appleAuth.performRequest({
+      requestedOperation: appleAuth.Operation.LOGIN,
+      requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+    });
+
+    // // get current authentication state for user
+    // // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
+    // const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
+
+    // // use credentialState response to ensure the user is authenticated
+    // if (credentialState === appleAuth.State.AUTHORIZED) {
+    //   // user is authenticated
+    console.log(appleAuthRequestResponse);
+    //}
+
+    // if(isSignInWithAppleSupported() && isIOS) {
+    //   signInWithApple(
+    //     {
+    //         // by default you don't get these details, but if you provide these scopes you will (and the user will get to choose which ones are allowed)
+    //         scopes: ["EMAIL", "FULLNAME"]
+    //     })
+    // .then((result: SignInWithAppleAuthorization) => {
+    //     if(this.type == 0 && !signup) {
+    //       this.login.get('appleToken').setValue(result.credential.user)
+    //       this.onSignInTap(true);
+    //     }
+    //     else if(this.type==1 && signup) {
+    //       if(result.credential.fullName.givenName && result.credential.fullName.familyName) {
+    //         this.registration.get('displayName').setValue(result.credential.fullName.givenName.concat(result.credential.fullName.familyName))
+    //       }
+    //       if(result.credential.user) {
+    //         this.registration.get('appleToken').setValue(result.credential.user)
+    //       }
+    //       if(result.credential.email) {
+    //         this.registration.get('email').setValue(result.credential.email)
+    //         this.checkForValidEmail().then(isValid => {
+    //           if(isValid) {
+    //             this.onRegisterTap(true)
+    //           }
+    //           else {
+    //             this.tempReason = this.tempReason.concat('. If you are using apple, change the display name and use the sign up button.')
+    //           }
+    //         })
+    //       }
+    //       if(!result.credential.email) {
+    //         this.showAlertApple();
+    //       }
+    //     }
+  }
+
   /**
    * @description render() returns a div
    * @returns The div containing the Log In form
@@ -232,21 +294,38 @@ function LogIn() {
               <Text style={styles.textForgotPass}>Forgot Password</Text>
             </TouchableOpacity>
           </View>
-
-          {/* <TouchableOpacity
+          <TouchableOpacity
             style={[
               styles.formButton,
               globalConstant.formButton,
               {
+                flexDirection: "row",
                 borderColor: globalConstant.blackColor,
                 borderWidth: globalConstant.formButtonBorderWidth,
                 backgroundColor: globalConstant.whiteColor,
               },
             ]}
+            onPress={() => onAppleButtonPress()}
           >
-            <Text style={styles.textAG}>Sign In with Apple</Text>
+            <Image
+              style={styles.signLogo}
+              source={require("../../../assets/apple_logo.jpg")}
+            />
+            <Text style={[styles.textAG, { padding: 5 }]}>
+              Sign In with Apple
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity
+
+          {/* <AppleButton
+        buttonStyle={AppleButton.Style.WHITE}
+        buttonType={AppleButton.Type.SIGN_IN}
+        style={{
+          width: 160, // You must specify a width
+          height: 45, // You must specify a height
+        }}
+        onPress={() => onAppleButtonPress()}
+      /> */}
+          {/* <TouchableOpacity
             style={[
               styles.formButton,
               globalConstant.formButton,

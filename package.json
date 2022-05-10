@@ -1,10 +1,13 @@
 {
   "dependencies": {
+    "@invertase/react-native-apple-authentication": "^2.1.5",
     "expo": "^44.0.6",
+    "expo-apple-authentication": "~4.1.0",
     "expo-auth-session": "~3.5.0",
     "expo-dev-client": "~0.8.4",
     "expo-linear-gradient": "~11.0.3",
     "expo-random": "~12.1.1",
+    "expo-secure-store": "~11.1.0",
     "formik": "^2.2.9",
     "lodash": "^4.17.21",
     "react": "17.0.1",
@@ -14,8 +17,7 @@
     "react-native-datepicker": "^1.7.2",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-web": "0.17.1",
-    "yup": "^0.32.11",
-    "expo-secure-store": "~11.1.0"
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

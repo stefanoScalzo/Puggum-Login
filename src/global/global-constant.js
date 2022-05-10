@@ -31,6 +31,7 @@ module.exports = {
     height: 44,
   },
 
+
   //border width size of the form's buttons
   formButtonBorderWidth: 1,
 

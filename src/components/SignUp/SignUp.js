@@ -247,19 +247,6 @@ function SignUp() {
             </TouchableOpacity>
           </View>
 
-          {/* <TouchableOpacity
-            style={[
-              styles.formButton,
-              globalConstant.formButton,
-              {
-                borderColor: globalConstant.blackColor,
-                borderWidth: globalConstant.formButtonBorderWidth,
-                backgroundColor: globalConstant.whiteColor,
-              },
-            ]}
-          >
-            <Text style={styles.textAG}>Sign In with Apple</Text>
-          </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.formButton,
@@ -271,7 +258,20 @@ function SignUp() {
               },
             ]}
           >
-            <Text style={styles.textAG}>Sign In with Google</Text>
+            <Text style={styles.textAG}>Sign Up with Apple</Text>
+          </TouchableOpacity>
+          {/* <TouchableOpacity
+            style={[
+              styles.formButton,
+              globalConstant.formButton,
+              {
+                borderColor: globalConstant.blackColor,
+                borderWidth: globalConstant.formButtonBorderWidth,
+                backgroundColor: globalConstant.whiteColor,
+              },
+            ]}
+          >
+            <Text style={styles.textAG}>Sign Up with Google</Text>
           </TouchableOpacity> */}
         </View>
       )}
