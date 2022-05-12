@@ -50,17 +50,23 @@ function LogIn() {
         body: JSON.stringify(data),
       });
       let responseJSON = await response.json();
+      console.log(responseJSON["status"] == "valid");
       if (responseJSON["status"] == "valid") {
         await SecureStore.setItemAsync("jwt", responseJSON["data"]["jwt"]);
         updateTokenInDatabase();
+        console.log(responseJSON["data"]["message"]);
+        console.log('log in');
       } else {
         if (responseJSON["data"]) {
+          console.log("error1");
           setError(responseJSON["data"]["message"]);
         } else {
+          console.log("error2");
           setError(responseJSON["error"]["code"]);
         }
       }
     } catch (e) {
+      console.log("error3");
       setError("Error to Sign In " + e);
     }
   }
@@ -144,14 +150,14 @@ function LogIn() {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
+      console.log("sign in");
       console.log(credential);
       const appleUserLogin = {
         appleToken: credential.identityToken,
         email: credential.email,
         password: '',
       }
-      console.log(appleUserLogin);
-      // onSignInTap(appleUserLogin);
+      onSignInTap(appleUserLogin);
       
     } catch (e) {
       if (e.code === "ERR_CANCELED") {
@@ -161,6 +167,7 @@ function LogIn() {
       }
     }
   }
+  
 
   /**
    * @description render() returns a div

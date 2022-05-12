@@ -186,6 +186,7 @@ function SignUp() {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
+      console.log("sign up");
       console.log(credential);
 
       if (credential.fullName.givenName && credential.fullName.familyName) {
@@ -201,7 +202,6 @@ function SignUp() {
           email: credential.email,
           password: "",
         };
-        console.log(appleUserRegister);
         console.log(checkForValidEmail(appleUserRegister));
         //if email valid, create new user by calling register function
         if (checkForValidEmail(appleUserRegister)) {
