@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Image,
   TouchableOpacity,
   Text,
   View,
@@ -13,9 +12,8 @@ import globalConstant from "../../global/global-constant.js";
 import { Formik } from "formik";
 import * as yup from "yup";
 import * as SecureStore from "expo-secure-store";
-import { appleAuth } from "@invertase/react-native-apple-authentication";
 import * as AppleAuthentication from "expo-apple-authentication";
-import AppleAuth from "../AppleAuth/AppleAuth";
+
 /**
  * @description This class is used to display the log in form
  * where the user can log in or reset their password
@@ -153,21 +151,46 @@ function LogIn() {
       console.log("sign in");
       console.log(credential);
       const appleUserLogin = {
-        appleToken: credential.identityToken,
+        appleToken: credential.user,
         email: credential.email,
         password: '',
       }
-      onSignInTap(appleUserLogin);
+      let appleIDProvider = await AppleAuthentication.getCredentialStateAsync(credential.user)
       
+      console.log(`===================================`);
+      console.log(appleIDProvider);
+      console.log(`===================================`);
+          switch (appleIDProvider) {
+            case 1:
+              console.log("valid");
+              
+              onSignInTap(appleUserLogin);
+              // The Apple ID credential is valid.
+              break
+            case 2:
+              console.log("revoke");
+              //The given user’s authorization has been revoked and they should be signed out.
+              // The Apple ID credential is revoked.
+              break
+            case 0:
+              console.log("not found");
+              //The user hasn’t established a relationship with Sign in with Apple.
+              // No credential was found.
+              break
+            default:
+              break
+          }
+        
+
     } catch (e) {
       if (e.code === "ERR_CANCELED") {
-       console.log(e);
+        console.log(e);
       } else {
         console.log(e);
       }
     }
   }
-  
+
 
   /**
    * @description render() returns a div
@@ -197,7 +220,7 @@ function LogIn() {
               {
                 borderColor:
                   (errors.email && touched.email) ||
-                  (errors.email && values.email)
+                    (errors.email && values.email)
                     ? "red"
                     : "white",
               },

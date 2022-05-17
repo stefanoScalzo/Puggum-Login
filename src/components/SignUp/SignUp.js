@@ -9,7 +9,6 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { terms } from "../../edit-profile/terms";
 import * as SecureStore from "expo-secure-store";
-import AppleAuth from "../AppleAuth/AppleAuth";
 import * as AppleAuthentication from "expo-apple-authentication";
 /**
  * @description This class is used to display the Sign Up form
@@ -198,7 +197,7 @@ function SignUp() {
         //create new user object
         const appleUserRegister = {
           displayName: userFullName,
-          appleToken: credential.identityToken,
+          appleToken: credential.user,
           email: credential.email,
           password: "",
         };
