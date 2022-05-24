@@ -1,5 +1,6 @@
 {
   "expo": {
+    "userInterfaceStyle": "automatic",
     "name": "Puggum-React-Login",
     "slug": "puggum-react-login",
     "version": "1.0.0",

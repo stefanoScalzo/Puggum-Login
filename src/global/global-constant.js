@@ -1,3 +1,6 @@
+
+import { Appearance, useColorScheme } from 'react-native-appearance';
+const colorScheme = Appearance.getColorScheme();
 // File for global constants
 module.exports = {
   //padding size
@@ -53,6 +56,8 @@ module.exports = {
       color: "white",
       fontSize: 16,
     },
+    datePicker: { backgroundColor: colorScheme === 'dark' ? '#222' : 'white' }, 
+    datePickerCon: { backgroundColor: colorScheme === 'dark' ? '#333' : 'white' }
   },
 
   //colors
