@@ -26,27 +26,32 @@ function LogIn() {
   //use to change the error message displayed to the user
   const [error, setError] = React.useState(null);
 
+  //use to verify if the mobile used is an IOS 
   const [isIOS, setIsIOS] = React.useState(null);
 
+  /**
+   * function used to verify if the mobile is an IOS whenever the user is using the application
+   */
   useEffect(() => {
     checkIsIOS();
   }, []);
 
+   /**
+   * function used to verify if the current device's operating system supports Apple authentication.
+   */
   async function checkIsIOS() {
     try {
       setIsIOS(await AppleAuthentication.isAvailableAsync());
     } catch (e) {
-      console.log(e);
+      setError("Couldn't detect the device's OS");
     }
   }
 
-  console.log(isIOS);
   /**
    * async function used to sign in the user
    * @param {*} data is the values entered by the user
    */
   async function onSignInTap(data) {
-    console.log("sign in");
     const url = environment["authHost"] + "api/user/post/login";
 
     try {
@@ -58,23 +63,17 @@ function LogIn() {
         body: JSON.stringify(data),
       });
       let responseJSON = await response.json();
-      console.log(responseJSON["status"] == "valid");
       if (responseJSON["status"] == "valid") {
         await SecureStore.setItemAsync("jwt", responseJSON["data"]["jwt"]);
         updateTokenInDatabase();
-        console.log(responseJSON["data"]["message"]);
-        console.log("log in");
       } else {
         if (responseJSON["data"]) {
-          console.log("error1");
           setError(responseJSON["data"]["message"]);
         } else {
-          console.log("error2");
           setError(responseJSON["error"]["code"]);
         }
       }
     } catch (e) {
-      console.log("error3");
       setError("Error to Sign In " + e);
     }
   }
@@ -143,7 +142,7 @@ function LogIn() {
           body: JSON.stringify(userToken),
         });
       } catch (e) {
-        console.log("Error to update token " + e);
+        setError("Error to update token " + e);
       }
     }
   }
@@ -152,8 +151,7 @@ function LogIn() {
    * async function used to block the user's in the database
    */
   async function blockUserInDatabase(data) {
-    console.log("blockdate");
-    const url = environment["authHost"] + "/api/user/post/updateBlockDate";
+    const url = environment["authHost"] + "/api/user/post/updateBlockedDate";
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -164,22 +162,20 @@ function LogIn() {
       });
       let responseJSON = await response.json();
       if (responseJSON["status"] == "valid") {
-        console.log("updated blokedDate in database");
         setError(responseJSON["data"]["message"]);
       }
     } catch (e) {
-      console.log(e);
       setError("Error to block/unblock user " + e);
     }
   }
 
   /**
-   * Function used to alert the user that their account was block because of apple credential is invalid
+   * Function used to alert the user that their apple account is invalid
    */
-  const blockUserAlert = () => {
+  const invalidUserAlert = () => {
     Alert.alert(
       "Account Blocked",
-      "Your Apple ID credential is revoked or not found. Please change your apple's password before log in again",
+      "Your Apple ID credential is revoked or not found. Please view your apple account before signing in again",
       [{ text: "Okay" }]
     );
   };
@@ -188,17 +184,13 @@ function LogIn() {
    * async function used to let the user sign in with apple authentication
    */
   async function onAppleButtonPress() {
-    console.log("Apple Pressed");
     try {
-      console.log(await AppleAuthentication.isAvailableAsync());
       const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [
           AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
-      console.log("sign in");
-      console.log(credential);
       const appleUserLogin = {
         appleToken: credential.user,
         email: credential.email,
@@ -211,31 +203,23 @@ function LogIn() {
         credential.user
       );
 
-      console.log("response from getCredentialStateAsync: " + appleIDProvider);
-      console.log(`=======================================================`);
       switch (appleIDProvider) {
         case 1:
-          console.log("Apple ID credential is valid");
-          //to test only
-          // appleUserLogin.isValidUser=false;
-          // blockUserAlert();
-
           // The Apple ID credential is valid.
           break;
         case 0:
-          console.log("revoke");
           //The given user’s authorization has been revoked and they should be signed out.
           setError("The Apple ID credential is revoked.");
-          //block user
+          //block user by setting isValidUser to false
           appleUserLogin.isValidUser = false;
-          blockUserAlert();
+          invalidUserAlert();
           break;
         case 2:
-          console.log("not found");
-          setError("No credential was found.");
-          appleUserLogin.isValidUser = false;
-          blockUserAlert();
           //The user hasn’t established a relationship with Sign in with Apple.
+          setError("No credential was found.");
+          //block user by setting isValidUser to false
+          appleUserLogin.isValidUser = false;
+          invalidUserAlert();
           break;
         default:
           break;
@@ -244,9 +228,8 @@ function LogIn() {
       await onSignInTap(appleUserLogin);
     } catch (e) {
       if (e.code === "ERR_CANCELED") {
-        console.log(e);
       } else {
-        console.log(e);
+        setError("Can't use apple authentication");
       }
     }
   }
@@ -360,7 +343,7 @@ function LogIn() {
             </TouchableOpacity>
           </View>
 
-          {!isIOS && (
+          {isIOS && (
             <AppleAuthentication.AppleAuthenticationButton
               buttonType={
                 AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN

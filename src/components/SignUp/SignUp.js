@@ -28,21 +28,26 @@ function SignUp() {
   //use to change the error message displayed to the user
   const [error, setError] = React.useState(null);
 
+  //use to verify if the mobile used is an IOS 
   const [isIOS, setIsIOS] = React.useState(null);
 
+   /**
+   * function used to verify if the mobile is an IOS whenever the user is using the application
+   */
   useEffect(() => {
     checkIsIOS();
   }, []);
 
+  /**
+   * function used to verify if the current device's operating system supports Apple authentication.
+   */
   async function checkIsIOS() {
     try {
       setIsIOS(await AppleAuthentication.isAvailableAsync());
     } catch (e) {
-      console.log(e);
+      setError("Couldn't detect the device's OS");
     }
   }
-
-  console.log(isIOS);
 
   /**
    * Function used to alert the user to ask if they agree to the term of use
@@ -72,7 +77,6 @@ function SignUp() {
     var newUser = "";
     if (inputData.appleToken) {
       newUser = inputData;
-      console.log(newUser);
     } else {
       let datePieces = inputData.dob.split("-");
 
@@ -156,13 +160,13 @@ function SignUp() {
   };
 
   /**
-   * Function used to alert the user that their account is invalid
+   * Function used to alert the user that their apple account is invalid
    */
   const invalidUserAlert = () => {
     Alert.alert(
       "Account Blocked",
-      "Your Apple ID credential is revoked or not found. Please change your apple's password before sign up again",
-      [{ text: "Close" }]
+      "Your Apple ID credential is revoked or not found. Please view your apple account before signing up again",
+      [{ text: "Okay" }]
     );
   };
 
@@ -170,14 +174,12 @@ function SignUp() {
    * async function used to check if the email is valid or not
    */
   async function checkForValidEmail(appleUserRegister) {
-    console.log("checkForValidEmail");
     const url =
       environment["host"] +
       "api/user/get/usernameEmailValid?email=" +
       appleUserRegister.email +
       "&displayName=" +
       appleUserRegister.displayName;
-    console.log(url);
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -186,7 +188,6 @@ function SignUp() {
         },
       });
       let responseJSON = await response.json();
-      console.log(responseJSON["status"]);
       if (responseJSON["status"] == "invalid") {
         setError(responseJSON["message"]);
         return false;
@@ -205,7 +206,6 @@ function SignUp() {
    */
   async function onAppleButtonPress() {
     var userFullName = "";
-    console.log("Apple Pressed");
     try {
       const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [
@@ -213,8 +213,6 @@ function SignUp() {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
-      console.log("sign up");
-      console.log(credential);
 
       if (credential.fullName.givenName && credential.fullName.familyName) {
         userFullName = credential.fullName.givenName.concat(
@@ -233,37 +231,28 @@ function SignUp() {
         };
         //if email valid, create new user by calling register function
         if (checkForValidEmail(appleUserRegister)) {
-          console.log("true");
-
-          console.log(`===================================`);
-          console.log(appleIDProvider);
-          console.log(`===================================`);
           //check the user's credential state
           let appleIDProvider =
             await AppleAuthentication.getCredentialStateAsync(credential.user);
           switch (appleIDProvider) {
             case 1:
-              console.log("Apple ID credential is valid");
+              //The Apple ID credential is valid.
               await onRegisterTap(appleUserRegister);
-              // The Apple ID credential is valid.
               break;
             case 0:
-              console.log("revoke");
-              invalidUserAlert();
               //The given user’s authorization has been revoked and they should be signed out.
+              invalidUserAlert();
               setError("The Apple ID credential is revoked.");
               break;
             case 2:
-              console.log("not found");
+              //The user hasn’t established a relationship with Sign in with Apple.
               invalidUserAlert();
               setError("No credential was found.");
-              //The user hasn’t established a relationship with Sign in with Apple.
               break;
             default:
               break;
           }
         } else {
-          console.log("false");
           setError("The email used is not valid.");
         }
       }
@@ -273,9 +262,8 @@ function SignUp() {
       }
     } catch (e) {
       if (e.code === "ERR_CANCELED") {
-        console.log(e);
       } else {
-        console.log(e);
+        setError("Can't use apple authentication");
       }
     }
   }
@@ -407,7 +395,7 @@ function SignUp() {
             </TouchableOpacity>
           </View>
 
-          {!isIOS && (
+          {isIOS && (
             <AppleAuthentication.AppleAuthenticationButton
               buttonType={
                 AppleAuthentication.AppleAuthenticationButtonType.SIGN_UP
