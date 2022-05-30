@@ -28,10 +28,10 @@ function SignUp() {
   //use to change the error message displayed to the user
   const [error, setError] = React.useState(null);
 
-  //use to verify if the mobile used is an IOS 
+  //use to verify if the mobile used is an IOS
   const [isIOS, setIsIOS] = React.useState(null);
 
-   /**
+  /**
    * function used to verify if the mobile is an IOS whenever the user is using the application
    */
   useEffect(() => {

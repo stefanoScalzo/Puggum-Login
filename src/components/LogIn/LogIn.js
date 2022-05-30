@@ -26,7 +26,7 @@ function LogIn() {
   //use to change the error message displayed to the user
   const [error, setError] = React.useState(null);
 
-  //use to verify if the mobile used is an IOS 
+  //use to verify if the mobile used is an IOS
   const [isIOS, setIsIOS] = React.useState(null);
 
   /**
@@ -36,7 +36,7 @@ function LogIn() {
     checkIsIOS();
   }, []);
 
-   /**
+  /**
    * function used to verify if the current device's operating system supports Apple authentication.
    */
   async function checkIsIOS() {
