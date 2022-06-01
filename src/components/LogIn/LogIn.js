@@ -83,8 +83,7 @@ function LogIn() {
    */
   const onForgotTap = (email) => {
     Alert.alert(
-      "Reset Password?",
-      "An email with a temporary password will be sent to your email address.",
+      "Reset Password?", "An email with a temporary password will be sent to your email address.",
       [
         {
           text: "Cancel",
@@ -174,8 +173,7 @@ function LogIn() {
    */
   const invalidUserAlert = () => {
     Alert.alert(
-      "Account Blocked",
-      "Your Apple ID credential is revoked or not found. Please view your apple account before signing in again",
+      "Account Blocked", "Your Apple ID credential is revoked or not found. Please view your apple account before signing in again",
       [{ text: "Okay" }]
     );
   };
@@ -356,19 +354,6 @@ function LogIn() {
               onPress={onAppleButtonPress}
             />
           )}
-          {/* <TouchableOpacity
-            style={[
-              styles.formButton,
-              globalConstant.formButton,
-              {
-                borderColor: globalConstant.blackColor,
-                borderWidth: globalConstant.formButtonBorderWidth,
-                backgroundColor: globalConstant.whiteColor,
-              },
-            ]}
-          >
-            <Text style={styles.textAG}>Sign In with Google</Text>
-          </TouchableOpacity> */}
         </View>
       )}
     </Formik>

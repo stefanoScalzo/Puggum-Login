@@ -149,13 +149,8 @@ function SignUp() {
    */
   const showAlertApple = (inputData) => {
     Alert.alert(
-      "Warning",
-      "There was no email from that response. If it is not your first time trying to autofill with apple, do the following and try again. Settings > Tap your name > Password & Security > Apps Using Apple Id > Puggum > Stop using Apple Id",
-      [
-        {
-          text: "Okay",
-        },
-      ]
+      "Warning", "There was no email from that response. If it is not your first time trying to autofill with apple, do the following and try again. Settings > Tap your name > Password & Security > Apps Using Apple Id > Puggum > Stop using Apple Id",
+      [{text: "Okay",}]
     );
   };
 
@@ -164,8 +159,7 @@ function SignUp() {
    */
   const invalidUserAlert = () => {
     Alert.alert(
-      "Account Blocked",
-      "Your Apple ID credential is revoked or not found. Please view your apple account before signing up again",
+      "Account Blocked", "Your Apple ID credential is revoked or not found. Please view your apple account before signing up again",
       [{ text: "Okay" }]
     );
   };
@@ -174,12 +168,7 @@ function SignUp() {
    * async function used to check if the email is valid or not
    */
   async function checkForValidEmail(appleUserRegister) {
-    const url =
-      environment["host"] +
-      "api/user/get/usernameEmailValid?email=" +
-      appleUserRegister.email +
-      "&displayName=" +
-      appleUserRegister.displayName;
+    const url = environment["host"] + "api/user/get/usernameEmailValid?email=" + appleUserRegister.email +"&displayName=" + appleUserRegister.displayName;
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -220,7 +209,7 @@ function SignUp() {
         );
       }
 
-      //if the email is not hidden
+      //if the email is not null
       if (credential.email) {
         //create new user object
         const appleUserRegister = {
@@ -229,7 +218,7 @@ function SignUp() {
           email: credential.email,
           password: "",
         };
-        //if email valid, create new user by calling register function
+        //if email is valid, create new user by calling onRegisterTap function
         if (checkForValidEmail(appleUserRegister)) {
           //check the user's credential state
           let appleIDProvider =
@@ -408,19 +397,6 @@ function SignUp() {
               onPress={onAppleButtonPress}
             />
           )}
-          {/* <TouchableOpacity
-            style={[
-              styles.formButton,
-              globalConstant.formButton,
-              {
-                borderColor: globalConstant.blackColor,
-                borderWidth: globalConstant.formButtonBorderWidth,
-                backgroundColor: globalConstant.whiteColor,
-              },
-            ]}
-          >
-            <Text style={styles.textAG}>Sign Up with Google</Text>
-          </TouchableOpacity> */}
         </View>
       )}
     </Formik>

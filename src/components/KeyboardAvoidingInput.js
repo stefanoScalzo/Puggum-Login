@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  SafeAreaView,
 } from "react-native";
 import styles from "../global/global-styles.js";
 
