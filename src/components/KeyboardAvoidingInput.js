@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  SafeAreaView,
 } from "react-native";
 import styles from "../global/global-styles.js";
 
@@ -14,7 +13,6 @@ import styles from "../global/global-styles.js";
  */
 function KeyboardAvoidingInput({ children }) {
   return (
-    <SafeAreaView>
       <KeyboardAvoidingView
         enabled
         behavior={Platform.OS === "ios" ? "padding" : null}
@@ -26,7 +24,6 @@ function KeyboardAvoidingInput({ children }) {
           </TouchableWithoutFeedback>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
   );
 }
 

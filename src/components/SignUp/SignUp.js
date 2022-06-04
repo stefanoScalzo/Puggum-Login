@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Alert, TouchableOpacity, Text, View, TextInput } from "react-native";
-/*https://github.com/xgfe/react-native-datepicker*/
 import DatePicker from "react-native-datepicker";
 import { environment } from "../../environment/environment";
 import styles from "../../global/global-styles.js";
@@ -9,7 +8,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { terms } from "../../edit-profile/terms";
 import * as SecureStore from "expo-secure-store";
-
+import * as AppleAuthentication from "expo-apple-authentication";
 /**
  * @description This class is used to display the Sign Up form
  * where the user can register
@@ -28,6 +27,27 @@ function SignUp() {
 
   //use to change the error message displayed to the user
   const [error, setError] = React.useState(null);
+
+  //use to verify if the mobile used is an IOS
+  const [isIOS, setIsIOS] = React.useState(null);
+
+  /**
+   * function used to verify if the mobile is an IOS whenever the user is using the application
+   */
+  useEffect(() => {
+    checkIsIOS();
+  }, []);
+
+  /**
+   * function used to verify if the current device's operating system supports Apple authentication.
+   */
+  async function checkIsIOS() {
+    try {
+      setIsIOS(await AppleAuthentication.isAvailableAsync());
+    } catch (e) {
+      setError("Couldn't detect the device's OS");
+    }
+  }
 
   /**
    * Function used to alert the user to ask if they agree to the term of use
@@ -54,19 +74,23 @@ function SignUp() {
    * @param {*} inputData is the values entered by the user
    */
   async function registerOption(inputData) {
-    let datePieces = inputData.dob.split("-");
+    var newUser = "";
+    if (inputData.appleToken) {
+      newUser = inputData;
+    } else {
+      let datePieces = inputData.dob.split("-");
 
-    //create a new User
-    const newUser = {
-      displayName: inputData.displayName,
-      email: inputData.email,
-      year: datePieces[0],
-      month: datePieces[1],
-      day: datePieces[2],
-      password: inputData.password,
-      dob: inputData.dob,
-    };
-
+      //create a new User
+      newUser = {
+        displayName: inputData.displayName,
+        email: inputData.email,
+        year: datePieces[0],
+        month: datePieces[1],
+        day: datePieces[2],
+        password: inputData.password,
+        dob: inputData.dob,
+      };
+    }
     const url = environment["authHost"] + "api/user/post/registerGoogle";
     try {
       const response = await fetch(url, {
@@ -119,6 +143,119 @@ function SignUp() {
     }
   }
 
+  /**
+   * Function used to alert the user to let them know their apple email is invalid
+   * @param {*} inputData is the values entered by the user
+   */
+  const showAlertApple = (inputData) => {
+    Alert.alert(
+      "Warning", "There was no email from that response. If it is not your first time trying to autofill with apple, do the following and try again. Settings > Tap your name > Password & Security > Apps Using Apple Id > Puggum > Stop using Apple Id",
+      [{text: "Okay",}]
+    );
+  };
+
+  /**
+   * Function used to alert the user that their apple account is invalid
+   */
+  const invalidUserAlert = () => {
+    Alert.alert(
+      "Account Blocked", "Your Apple ID credential is revoked or not found. Please view your apple account before signing up again",
+      [{ text: "Okay" }]
+    );
+  };
+
+  /**
+   * async function used to check if the email is valid or not
+   */
+  async function checkForValidEmail(appleUserRegister) {
+    const url = environment["host"] + "api/user/get/usernameEmailValid?email=" + appleUserRegister.email +"&displayName=" + appleUserRegister.displayName;
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      let responseJSON = await response.json();
+      if (responseJSON["status"] == "invalid") {
+        setError(responseJSON["message"]);
+        return false;
+      } else {
+        setError(responseJSON[""]);
+        return true;
+      }
+    } catch (e) {
+      setError("There was an error " + e);
+      return false;
+    }
+  }
+
+  /**
+   * async function used to let the user sign in with apple authentication
+   */
+  async function onAppleButtonPress() {
+    var userFullName = "";
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      if (credential.fullName.givenName && credential.fullName.familyName) {
+        userFullName = credential.fullName.givenName.concat(
+          credential.fullName.familyName
+        );
+      }
+
+      //if the email is not null
+      if (credential.email) {
+        //create new user object
+        const appleUserRegister = {
+          displayName: userFullName,
+          appleToken: credential.user,
+          email: credential.email,
+          password: "",
+        };
+        //if email is valid, create new user by calling onRegisterTap function
+        if (checkForValidEmail(appleUserRegister)) {
+          //check the user's credential state
+          let appleIDProvider =
+            await AppleAuthentication.getCredentialStateAsync(credential.user);
+          switch (appleIDProvider) {
+            case 1:
+              //The Apple ID credential is valid.
+              await onRegisterTap(appleUserRegister);
+              break;
+            case 0:
+              //The given user’s authorization has been revoked and they should be signed out.
+              invalidUserAlert();
+              setError("The Apple ID credential is revoked.");
+              break;
+            case 2:
+              //The user hasn’t established a relationship with Sign in with Apple.
+              invalidUserAlert();
+              setError("No credential was found.");
+              break;
+            default:
+              break;
+          }
+        } else {
+          setError("The email used is not valid.");
+        }
+      }
+
+      if (!credential.email) {
+        showAlertApple();
+      }
+    } catch (e) {
+      if (e.code === "ERR_CANCELED") {
+      } else {
+        setError("Can't use apple authentication");
+      }
+    }
+  }
   /**
    * @description render() returns a div
    * @returns The div containing the sign up form
@@ -247,32 +384,19 @@ function SignUp() {
             </TouchableOpacity>
           </View>
 
-          {/* <TouchableOpacity
-            style={[
-              styles.formButton,
-              globalConstant.formButton,
-              {
-                borderColor: globalConstant.blackColor,
-                borderWidth: globalConstant.formButtonBorderWidth,
-                backgroundColor: globalConstant.whiteColor,
-              },
-            ]}
-          >
-            <Text style={styles.textAG}>Sign In with Apple</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.formButton,
-              globalConstant.formButton,
-              {
-                borderColor: globalConstant.blackColor,
-                borderWidth: globalConstant.formButtonBorderWidth,
-                backgroundColor: globalConstant.whiteColor,
-              },
-            ]}
-          >
-            <Text style={styles.textAG}>Sign In with Google</Text>
-          </TouchableOpacity> */}
+          {isIOS && (
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonType={
+                AppleAuthentication.AppleAuthenticationButtonType.SIGN_UP
+              }
+              buttonStyle={
+                AppleAuthentication.AppleAuthenticationButtonStyle.WHITE_OUTLINE
+              }
+              cornerRadius={100}
+              style={[globalConstant.formButton]}
+              onPress={onAppleButtonPress}
+            />
+          )}
         </View>
       )}
     </Formik>

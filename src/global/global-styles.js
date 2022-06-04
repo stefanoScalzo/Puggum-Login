@@ -10,6 +10,7 @@ const inputFontSize = 16;
 const letterSpacing = 0.25;
 const borderRadius = 100;
 const borderWidth = 1;
+const signLogoSize=24;
 
 const styles = StyleSheet.create({
   textForgotPass: {
@@ -126,6 +127,15 @@ const styles = StyleSheet.create({
   keyboardAvoidingViewStyle: {
     flex: 1,
     width: Dimensions.get("screen").width,
+  },
+
+  //Sign in and Sign out logo image
+  signLogo: {
+    width: signLogoSize,
+    height: signLogoSize,
+    alignItems: "flex-start",
+    
+    justifyContent: "flex-start",
   },
 });
 

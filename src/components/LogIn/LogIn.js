@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { TouchableOpacity, Text, View, TextInput, Alert } from "react-native";
 import { environment } from "../../environment/environment";
 import styles from "../../global/global-styles.js";
@@ -6,6 +6,8 @@ import globalConstant from "../../global/global-constant.js";
 import { Formik } from "formik";
 import * as yup from "yup";
 import * as SecureStore from "expo-secure-store";
+import * as AppleAuthentication from "expo-apple-authentication";
+
 /**
  * @description This class is used to display the log in form
  * where the user can log in or reset their password
@@ -23,6 +25,27 @@ function LogIn() {
 
   //use to change the error message displayed to the user
   const [error, setError] = React.useState(null);
+
+  //use to verify if the mobile used is an IOS
+  const [isIOS, setIsIOS] = React.useState(null);
+
+  /**
+   * function used to verify if the mobile is an IOS whenever the user is using the application
+   */
+  useEffect(() => {
+    checkIsIOS();
+  }, []);
+
+  /**
+   * function used to verify if the current device's operating system supports Apple authentication.
+   */
+  async function checkIsIOS() {
+    try {
+      setIsIOS(await AppleAuthentication.isAvailableAsync());
+    } catch (e) {
+      setError("Couldn't detect the device's OS");
+    }
+  }
 
   /**
    * async function used to sign in the user
@@ -60,8 +83,7 @@ function LogIn() {
    */
   const onForgotTap = (email) => {
     Alert.alert(
-      "Reset Password?",
-      "An email with a temporary password will be sent to your email address.",
+      "Reset Password?", "An email with a temporary password will be sent to your email address.",
       [
         {
           text: "Cancel",
@@ -120,6 +142,92 @@ function LogIn() {
         });
       } catch (e) {
         setError("Error to update token " + e);
+      }
+    }
+  }
+
+  /**
+   * async function used to block the user's in the database
+   */
+  async function blockUserInDatabase(data) {
+    const url = environment["authHost"] + "/api/user/post/updateBlockedDate";
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      let responseJSON = await response.json();
+      if (responseJSON["status"] == "valid") {
+        setError(responseJSON["data"]["message"]);
+      }
+    } catch (e) {
+      setError("Error to block/unblock user " + e);
+    }
+  }
+
+  /**
+   * Function used to alert the user that their apple account is invalid
+   */
+  const invalidUserAlert = () => {
+    Alert.alert(
+      "Account Blocked", "Your Apple ID credential is revoked or not found. Please view your apple account before signing in again",
+      [{ text: "Okay" }]
+    );
+  };
+
+  /**
+   * async function used to let the user sign in with apple authentication
+   */
+  async function onAppleButtonPress() {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+      const appleUserLogin = {
+        appleToken: credential.user,
+        email: credential.email,
+        password: "",
+        isValidUser: true,
+      };
+
+      //check the user's credential state
+      let appleIDProvider = await AppleAuthentication.getCredentialStateAsync(
+        credential.user
+      );
+
+      switch (appleIDProvider) {
+        case 1:
+          // The Apple ID credential is valid.
+          break;
+        case 0:
+          //The given user’s authorization has been revoked and they should be signed out.
+          setError("The Apple ID credential is revoked.");
+          //block user by setting isValidUser to false
+          appleUserLogin.isValidUser = false;
+          invalidUserAlert();
+          break;
+        case 2:
+          //The user hasn’t established a relationship with Sign in with Apple.
+          setError("No credential was found.");
+          //block user by setting isValidUser to false
+          appleUserLogin.isValidUser = false;
+          invalidUserAlert();
+          break;
+        default:
+          break;
+      }
+      await blockUserInDatabase(appleUserLogin);
+      await onSignInTap(appleUserLogin);
+    } catch (e) {
+      if (e.code === "ERR_CANCELED") {
+      } else {
+        setError("Can't use apple authentication");
       }
     }
   }
@@ -233,32 +341,19 @@ function LogIn() {
             </TouchableOpacity>
           </View>
 
-          {/* <TouchableOpacity
-            style={[
-              styles.formButton,
-              globalConstant.formButton,
-              {
-                borderColor: globalConstant.blackColor,
-                borderWidth: globalConstant.formButtonBorderWidth,
-                backgroundColor: globalConstant.whiteColor,
-              },
-            ]}
-          >
-            <Text style={styles.textAG}>Sign In with Apple</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.formButton,
-              globalConstant.formButton,
-              {
-                borderColor: globalConstant.blackColor,
-                borderWidth: globalConstant.formButtonBorderWidth,
-                backgroundColor: globalConstant.whiteColor,
-              },
-            ]}
-          >
-            <Text style={styles.textAG}>Sign In with Google</Text>
-          </TouchableOpacity> */}
+          {isIOS && (
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonType={
+                AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+              }
+              buttonStyle={
+                AppleAuthentication.AppleAuthenticationButtonStyle.WHITE_OUTLINE
+              }
+              cornerRadius={100}
+              style={[globalConstant.formButton]}
+              onPress={onAppleButtonPress}
+            />
+          )}
         </View>
       )}
     </Formik>
