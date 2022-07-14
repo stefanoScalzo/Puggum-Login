@@ -7,7 +7,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import * as SecureStore from "expo-secure-store";
 import * as AppleAuthentication from "expo-apple-authentication";
-
+import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 /**
  * @description This class is used to display the log in form
  * where the user can log in or reset their password
@@ -265,7 +265,7 @@ function LogIn() {
                     : "white",
               },
             ]}
-            placeholder="Email*"
+            placeholder="Email**"
             placeholderTextColor="white"
             className="form-input"
             onChangeText={handleChange("email")}
@@ -305,7 +305,7 @@ function LogIn() {
             </Text>
           )}
 
-          <View style={{ opacity: !isValid ? "0.5" : "1" }}>
+          <View style={{ opacity: !isValid ? 0.5 : 1 }}>
             <TouchableOpacity
               style={[
                 styles.formButton,
@@ -320,9 +320,15 @@ function LogIn() {
               <Text style={styles.textSignIn}>Sign In</Text>
             </TouchableOpacity>
           </View>
-
+          <GoogleSigninButton
+            style={{ width: 192, height: 48 }}
+            size={GoogleSigninButton.Size.Wide}
+            color={GoogleSigninButton.Color.Dark}
+            onPress={this._signIn}
+            disabled={this.state.isSigninInProgress}
+          />;
           <View
-            style={{ opacity: !errors.email && values.email ? "1" : "0.5" }}
+            style={{ opacity: !errors.email && values.email ? 1 : 0.5 }}
           >
             <TouchableOpacity
               style={[

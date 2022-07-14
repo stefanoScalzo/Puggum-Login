@@ -15,6 +15,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.puggum.puggumreactlogin"
-    }
+    },
+    "plugins": ["@react-native-google-signin/google-signin"]
   }
 }

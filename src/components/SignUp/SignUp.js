@@ -13,6 +13,7 @@ import * as AppleAuthentication from "expo-apple-authentication";
  * @description This class is used to display the Sign Up form
  * where the user can register
  */
+
 function SignUp() {
   const token = "";
   //use to add validation to the form by using yup
@@ -366,7 +367,7 @@ function SignUp() {
             </Text>
           )}
 
-          <View style={{ opacity: !isValid ? "0.5" : "1" }}>
+          <View style={{ opacity: !isValid ? 0.5 : 1 }}>
             <TouchableOpacity
               style={[
                 styles.formButton,
