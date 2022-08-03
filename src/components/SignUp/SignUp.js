@@ -366,7 +366,7 @@ function SignUp() {
             </Text>
           )}
 
-          <View style={{ opacity: !isValid ? "0.5" : "1" }}>
+          <View style={{ opacity: !isValid ? 0.5 : 1 }}>
             <TouchableOpacity
               style={[
                 styles.formButton,

@@ -305,7 +305,7 @@ function LogIn() {
             </Text>
           )}
 
-          <View style={{ opacity: !isValid ? "0.5" : "1" }}>
+          <View style={{ opacity: !isValid ? 0.5 : 1 }}>
             <TouchableOpacity
               style={[
                 styles.formButton,
@@ -322,7 +322,7 @@ function LogIn() {
           </View>
 
           <View
-            style={{ opacity: !errors.email && values.email ? "1" : "0.5" }}
+            style={{ opacity: !errors.email && values.email ? 1 : 0.5 }}
           >
             <TouchableOpacity
               style={[
